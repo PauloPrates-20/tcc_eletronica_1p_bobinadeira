@@ -80,10 +80,14 @@ int telaInicial() {
 }
 
 int telaBobinar() {
+    display.setCursor(0,0);
+    display.print("Bobinar")
     display.setCursor(0,1);
-    display.print("Teste Bobinar");
+    display.print("1 - Novo Indutor");
     display.setCursor(0,2);
-    display.print("Pressione D para voltar");
+    display.print("2 - Carregar Indutor");
+    display.setCursor(0,3);
+    display.print("D - Voltar");
 
     return 1;
 }
