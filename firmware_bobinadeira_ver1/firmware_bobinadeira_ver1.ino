@@ -13,6 +13,7 @@
 #define DC_PWMB 11 // segundo pino de pulso do motor dc
 
 /* controle de telas
+id -1 = erro
 id 0 = inicio
 id 1 = bobinar
 id 2 = memória
@@ -106,9 +107,11 @@ int telaRecalibrar() {
 }
 
 // tela de erro do teclado
-void selecaoInvalida() {
+int selecaoInvalida() {
     display.setCursor(0,1);
     display.print("Comando Inválido!");
     display.setCursor(0,2);
     display.print("Tente Novamente!");
+
+    return -1;
 }
