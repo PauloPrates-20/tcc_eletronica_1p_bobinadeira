@@ -1,2 +1,3 @@
 #ignora arquivos de backup do proteus
-.pdsbak
+*.pdsbak
+*.WORKSPACE

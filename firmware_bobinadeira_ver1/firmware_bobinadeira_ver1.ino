@@ -1,16 +1,16 @@
 #include <Keypad.h>
 #include <LiquidCrystal_I2C.h>
 
-#define KEYPAD_ROWS 4 // quantidade de linhas do teclado matricial
-#define KEYPAD_COLUMNS 4 // quantidade de colunas do teclado matricial
-#define DISPLAY_COLUMNS 20 // quantidade de colunas do display
-#define DISPLAY_ROWS 4 // quantidade de linhas do display
-#define DISPLAY_ADDRESS 0x27 // endereço i2c do display
-#define STEPPER_PWM 6 // pino de pulso do motor de passo
-#define STEPPER_ENABLE 3 // pino de enable do motor de passo
-#define STEPPER_DIR 9 // pino de direção do motor de passo
-#define DC_PWMA 10 // primeiro pino de pulso do motor dc
-#define DC_PWMB 11 // segundo pino de pulso do motor dc
+#define KEYPAD_ROWS 4         // quantidade de linhas do teclado matricial
+#define KEYPAD_COLUMNS 4      // quantidade de colunas do teclado matricial
+#define DISPLAY_COLUMNS 20    // quantidade de colunas do display
+#define DISPLAY_ROWS 4        // quantidade de linhas do display
+#define DISPLAY_ADDRESS 0x27  // endereço i2c do display
+#define STEPPER_PWM 6         // pino de pulso do motor de passo
+#define STEPPER_ENABLE 3      // pino de enable do motor de passo
+#define STEPPER_DIR 9         // pino de direção do motor de passo
+#define DC_PWMA 10            // primeiro pino de pulso do motor dc
+#define DC_PWMB 11            // segundo pino de pulso do motor dc
 
 /* controle de telas
 id -1 = erro
@@ -19,16 +19,16 @@ id 1 = bobinar
 id 2 = memória
 id 3 = recalibrar
 */
-int telaAtual = 0; // iniciliza a interface na tela inicial
+int telaAtual = 0;  // iniciliza a interface na tela inicial
 
 // definição do teclado matricial
-byte keypad_row_pins[KEYPAD_ROWS] = {2, 3, 4, 5}; // pinos associados às linhas do teclado
-byte keypad_column_pins[KEYPAD_COLUMNS] = {7, 8, 12, 13}; // pinos associados às colunas do teclado
-// mapeamento das teclas 
-char keys[KEYPAD_ROWS][KEYPAD_COLUMNS] = {'1', '2', '3', 'A',
-                                             '4', '5', '6', 'B',
-                                             '7', '8', '9', 'C',
-                                             '*', '0', '#', 'D'};
+byte keypad_row_pins[KEYPAD_ROWS] = { 2, 3, 4, 5 };          // pinos associados às linhas do teclado
+byte keypad_column_pins[KEYPAD_COLUMNS] = { 7, 8, 12, 13 };  // pinos associados às colunas do teclado
+// mapeamento das teclas
+char keys[KEYPAD_ROWS][KEYPAD_COLUMNS] = { '1', '2', '3', 'A',
+                                           '4', '5', '6', 'B',
+                                           '7', '8', '9', 'C',
+                                           '*', '0', '#', 'D' };
 // instanciamento do teclado
 Keypad teclado = Keypad(makeKeymap(keys), keypad_row_pins, keypad_column_pins, KEYPAD_ROWS, KEYPAD_COLUMNS);
 
@@ -38,107 +38,116 @@ Keypad teclado = Keypad(makeKeymap(keys), keypad_row_pins, keypad_column_pins, K
 LiquidCrystal_I2C display(0x38, DISPLAY_COLUMNS, DISPLAY_ROWS);
 
 void setup() {
-    Serial.begin(9600); // inicialização da comunicação Serial
+  Serial.begin(9600);  // inicialização da comunicação Serial
 
-    // tela inicial da interface
-    display.init();
-    display.backlight();
-    telaInicial();
+  // tela inicial da interface
+  display.init();
+  display.backlight();
+  telaInicial();
 }
 
 void loop() {
-  //   char commandKey = teclado.getKey(); // lê os comandos do usuário pelo teclado matricial
-  //   if(commandKey != '\n') {
-  //     switch(commandKey) {
-  //       case '1':
-  //           telaAtual = telaBobinar();
-  //           break;
-  //       case '2':
-  //           telaAtual = telaMemoria();
-  //           break;
-  //       case '3':
-  //           telaAtual = telaRecalibrar();
-  //           delay(3000);
-  //           telaAtual = telaInicial();
-  //           break;
-  //       default:
-  //           selecaoInvalida();
-  //           delay(3000);
-  //           telaAtual = telaInicial();
-  //   }
-  // }
+  char commandKey = teclado.getKey();  // lê os comandos do usuário pelo teclado matricial
+  if (commandKey != '\n') {
+    switch (commandKey) {
+      case '1':
+        telaAtual = telaBobinar();
+        break;
+      case '2':
+        telaAtual = telaMemoria();
+        break;
+      case '3':
+        for(int time = 3000; time >= 0; time -= 1000) {
+          String tempo = String(time / 1000) + "s";
+          telaAtual = telaRecalibrar(tempo);
+          delay(1000);
+        }
+        telaAtual = telaInicial();
+        break;
+        case 'D':
+          telaAtual = telaInicial();
+        // default:
+        //     selecaoInvalida();
+        //     delay(3000);
+        //     telaAtual = telaInicial();
+    }
+  }
 }
-    
+
 
 // desenho da tela inicial do display
 int telaInicial() {
-    String titulo = "Bobinadeira V1.0";
-    display.setCursor(centralizarDisplay(titulo),0);
-    display.print(titulo);
-    display.setCursor(0,1);
-    display.print("1 - Bobinar");
-    display.setCursor(0,2);
-    display.print("2 - Memoria");
-    display.setCursor(0,3);
-    display.print("3 - Recalibrar");
+  display.clear();
+  String titulo = "Bobinadeira V1.0";
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(0, 1);
+  display.print("1 - Bobinar");
+  display.setCursor(0, 2);
+  display.print("2 - Memoria");
+  display.setCursor(0, 3);
+  display.print("3 - Recalibrar");
 
-    return 0;
+  return 0;
 }
 
 int telaBobinar() {
-    String titulo = "Bobinar";
-    display.setCursor(centralizarDisplay(titulo),0);
-    display.print(titulo);
-    display.setCursor(0,1);
-    display.print("1 - Novo Indutor");
-    display.setCursor(0,2);
-    display.print("2 - Carregar Indutor");
-    display.setCursor(0,3);
-    display.print("D - Voltar");
+  display.clear();
+  String titulo = "Bobinar";
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(0, 1);
+  display.print("1 - Novo Indutor");
+  display.setCursor(0, 2);
+  display.print("2 - Carregar Indutor");
+  display.setCursor(0, 3);
+  display.print("D - Voltar");
 
-    return 1;
+  return 1;
 }
 
 int telaMemoria() {
-    display.setCursor(0,1);
-    display.print("Teste Memória");
-    display.setCursor(0,2);
-    display.print("Pressione D para voltar");
+  display.clear();
+  display.setCursor(0, 1);
+  display.print("Teste Memoria");
+  display.setCursor(0, 2);
+  display.print("D para voltar");
 
-    return 2;
+  return 2;
 }
 
-int telaRecalibrar() {
-    String linha1 = "Recalibrando";
-    String linha2 = "Aguarde";
-    display.setCursor(centralizarDisplay(linha1),1);
-    display.print(linha1);
-    display.setCursor(centralizarDisplay(linha2),2);
-    display.print(linha2);
+int telaRecalibrar(String tempo) {
+  display.clear();
+  String linha1 = "Recalibrando";
+  String linha2 = "Aguarde " + tempo;
+  display.setCursor(centralizarDisplay(linha1), 1);
+  display.print(linha1);
+  display.setCursor(centralizarDisplay(linha2), 2);
+  display.print(linha2);
 
-    return 3;
+  return 3;
 }
 
 // tela de erro do teclado
 int selecaoInvalida() {
-    String linha1 = "Comando Inválido!";
-    String linha2 = "Tente Novamente!";
+  display.clear();
+  String linha1 = "Comando Inválido!";
+  String linha2 = "Tente Novamente!";
 
-    display.setCursor(centralizarDisplay(linha1),1);
-    display.print(linha1);
-    display.setCursor(centralizarDisplay(linha2),2);
-    display.print(linha2);
+  display.setCursor(centralizarDisplay(linha1), 1);
+  display.print(linha1);
+  display.setCursor(centralizarDisplay(linha2), 2);
+  display.print(linha2);
 
-    return -1;
+  return -1;
 }
 
 int centralizarDisplay(String texto) {
-    int posicao = (20 - texto.length()) / 2;
+  int posicao = (20 - texto.length()) / 2;
 
-    if(posicao < 0) {
-        return 0;
-    }
-    else {
-        return posicao;
-    }
+  if (posicao < 0) {
+    return 0;
+  } else {
+    return posicao;
+  }
 }
