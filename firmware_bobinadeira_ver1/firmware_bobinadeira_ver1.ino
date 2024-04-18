@@ -33,7 +33,9 @@ char keys[KEYPAD_ROWS][KEYPAD_COLUMNS] = {'1', '2', '3', 'A',
 Keypad teclado = Keypad(makeKeymap(keys), keypad_row_pins, keypad_column_pins, KEYPAD_ROWS, KEYPAD_COLUMNS);
 
 // instanciamento do display
-LiquidCrystal_I2C display(DISPLAY_ADDRESS, DISPLAY_COLUMNS, DISPLAY_ROWS);
+// endereço 0x27 no modelo físico
+// endereço 0x38 para teste no proteus
+LiquidCrystal_I2C display(0x38, DISPLAY_COLUMNS, DISPLAY_ROWS);
 
 void setup() {
     Serial.begin(9600); // inicialização da comunicação Serial
@@ -45,25 +47,28 @@ void setup() {
 }
 
 void loop() {
-    char commandKey = teclado.getKey(); // lê os comandos do usuário pelo teclado matricial
-    switch(commandKey) {
-        case '1':
-            telaAtual = telaBobinar();
-            break;
-        case '2':
-            telaAtual = telaMemoria();
-            break;
-        case '3':
-            telaAtual = telaRecalibrar();
-            delay(3000);
-            telaAtual = telaInicial();
-            break;
-        default:
-            selecaoInvalida();
-            delay(3000);
-            telaAtual = telaInicial();
-    }
+  //   char commandKey = teclado.getKey(); // lê os comandos do usuário pelo teclado matricial
+  //   if(commandKey != '\n') {
+  //     switch(commandKey) {
+  //       case '1':
+  //           telaAtual = telaBobinar();
+  //           break;
+  //       case '2':
+  //           telaAtual = telaMemoria();
+  //           break;
+  //       case '3':
+  //           telaAtual = telaRecalibrar();
+  //           delay(3000);
+  //           telaAtual = telaInicial();
+  //           break;
+  //       default:
+  //           selecaoInvalida();
+  //           delay(3000);
+  //           telaAtual = telaInicial();
+  //   }
+  // }
 }
+    
 
 // desenho da tela inicial do display
 int telaInicial() {
@@ -73,7 +78,7 @@ int telaInicial() {
     display.setCursor(0,1);
     display.print("1 - Bobinar");
     display.setCursor(0,2);
-    display.print("2 - Memória");
+    display.print("2 - Memoria");
     display.setCursor(0,3);
     display.print("3 - Recalibrar");
 
