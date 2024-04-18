@@ -67,8 +67,9 @@ void loop() {
 
 // desenho da tela inicial do display
 int telaInicial() {
-    display.setCursor(0,0);
-    display.print("Bobinadeira V1.0");
+    String titulo = "Bobinadeira V1.0";
+    display.setCursor(centralizarDisplay(titulo),0);
+    display.print(titulo);
     display.setCursor(0,1);
     display.print("1 - Bobinar");
     display.setCursor(0,2);
@@ -80,8 +81,9 @@ int telaInicial() {
 }
 
 int telaBobinar() {
-    display.setCursor(0,0);
-    display.print("Bobinar")
+    String titulo = "Bobinar";
+    display.setCursor(centralizarDisplay(titulo),0);
+    display.print(titulo);
     display.setCursor(0,1);
     display.print("1 - Novo Indutor");
     display.setCursor(0,2);
@@ -102,20 +104,36 @@ int telaMemoria() {
 }
 
 int telaRecalibrar() {
-    display.setCursor(0,1);
-    display.print("Recalibrando");
-    display.setCursor(0,2);
-    display.print("Aguarde");
+    String linha1 = "Recalibrando";
+    String linha2 = "Aguarde";
+    display.setCursor(centralizarDisplay(linha1),1);
+    display.print(linha1);
+    display.setCursor(centralizarDisplay(linha2),2);
+    display.print(linha2);
 
     return 3;
 }
 
 // tela de erro do teclado
 int selecaoInvalida() {
-    display.setCursor(0,1);
-    display.print("Comando Inválido!");
-    display.setCursor(0,2);
-    display.print("Tente Novamente!");
+    String linha1 = "Comando Inválido!";
+    String linha2 = "Tente Novamente!";
+
+    display.setCursor(centralizarDisplay(linha1),1);
+    display.print(linha1);
+    display.setCursor(centralizarDisplay(linha2),2);
+    display.print(linha2);
 
     return -1;
+}
+
+int centralizarDisplay(String texto) {
+    int posicao = (20 - texto.length()) / 2;
+
+    if(posicao < 0) {
+        return 0;
+    }
+    else {
+        return posicao;
+    }
 }
