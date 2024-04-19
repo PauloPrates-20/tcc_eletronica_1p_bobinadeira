@@ -64,7 +64,7 @@ void loop() {
         }
         telaAtual = telaInicial();
         break;
-        case 'D':
+        case '0':
           telaAtual = telaInicial();
         // default:
         //     selecaoInvalida();
@@ -101,7 +101,7 @@ int telaBobinar() {
   display.setCursor(0, 2);
   display.print("2 - Carregar Indutor");
   display.setCursor(0, 3);
-  display.print("D - Voltar");
+  display.print("0 - Voltar");
 
   return 1;
 }
@@ -111,7 +111,7 @@ int telaMemoria() {
   display.setCursor(0, 1);
   display.print("Teste Memoria");
   display.setCursor(0, 2);
-  display.print("D para voltar");
+  display.print("0 para voltar");
 
   return 2;
 }
