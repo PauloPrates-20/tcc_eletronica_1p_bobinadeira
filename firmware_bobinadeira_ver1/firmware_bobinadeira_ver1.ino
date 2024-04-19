@@ -41,7 +41,7 @@ void setup() {
   Serial.begin(9600);  // inicialização da comunicação Serial
 
   // tela inicial da interface
-  display.init();
+  display.begin();
   display.backlight();
   telaInicial();
 }
