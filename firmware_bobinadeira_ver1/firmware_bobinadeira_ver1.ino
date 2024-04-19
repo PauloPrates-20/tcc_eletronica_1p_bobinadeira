@@ -48,7 +48,7 @@ void setup() {
 
 void loop() {
   char commandKey = teclado.getKey();  // lê os comandos do usuário pelo teclado matricial
-  if (commandKey != '\n') {
+  if (commandKey) {
     switch (commandKey) {
       case '1':
         telaAtual = telaBobinar();
@@ -66,10 +66,11 @@ void loop() {
         break;
         case '0':
           telaAtual = telaInicial();
-        // default:
-        //     selecaoInvalida();
-        //     delay(3000);
-        //     telaAtual = telaInicial();
+        default:
+            selecaoInvalida();
+            delay(3000);
+            telaAtual = telaInicial();
+            break;
     }
   }
 }
