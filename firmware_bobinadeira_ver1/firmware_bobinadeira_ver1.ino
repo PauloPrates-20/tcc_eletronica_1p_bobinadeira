@@ -66,6 +66,7 @@ void loop() {
         break;
         case '0':
           telaAtual = telaInicial();
+          break;
         default:
             selecaoInvalida();
             delay(3000);
@@ -132,7 +133,7 @@ int telaRecalibrar(String tempo) {
 // tela de erro do teclado
 int selecaoInvalida() {
   display.clear();
-  String linha1 = "Comando Inválido!";
+  String linha1 = "Comando Invalido!";
   String linha2 = "Tente Novamente!";
 
   display.setCursor(centralizarDisplay(linha1), 1);
