@@ -1,3 +1,6 @@
 #ignora arquivos de backup do proteus
 *.pdsbak
 *.WORKSPACE
+
+#ignora os arquivos de configuração do VS Code
+.vscode
