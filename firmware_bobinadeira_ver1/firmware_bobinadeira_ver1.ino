@@ -16,8 +16,7 @@
 id -1 = erro
 id 0 = inicio
 id 1 = bobinar
-id 2 = memória
-id 3 = recalibrar
+id 2 = recalibrar
 */
 int telaAtual = 0;  // iniciliza a interface na tela inicial
 
@@ -54,9 +53,6 @@ void loop() {
         telaAtual = telaBobinar();
         break;
       case '2':
-        telaAtual = telaMemoria();
-        break;
-      case '3':
         for(int time = 3000; time >= 0; time -= 1000) {
           String tempo = String(time / 1000) + "s";
           telaAtual = telaRecalibrar(tempo);
@@ -86,9 +82,7 @@ int telaInicial() {
   display.setCursor(0, 1);
   display.print("1 - Bobinar");
   display.setCursor(0, 2);
-  display.print("2 - Memoria");
-  display.setCursor(0, 3);
-  display.print("3 - Recalibrar");
+  display.print("2 - Recalibrar");
 
   return 0;
 }
@@ -108,16 +102,6 @@ int telaBobinar() {
   return 1;
 }
 
-int telaMemoria() {
-  display.clear();
-  display.setCursor(0, 1);
-  display.print("Teste Memoria");
-  display.setCursor(0, 2);
-  display.print("0 para voltar");
-
-  return 2;
-}
-
 int telaRecalibrar(String tempo) {
   display.clear();
   String linha1 = "Recalibrando";
@@ -127,7 +111,7 @@ int telaRecalibrar(String tempo) {
   display.setCursor(centralizarDisplay(linha2), 2);
   display.print(linha2);
 
-  return 3;
+  return 2;
 }
 
 // tela de erro do teclado
