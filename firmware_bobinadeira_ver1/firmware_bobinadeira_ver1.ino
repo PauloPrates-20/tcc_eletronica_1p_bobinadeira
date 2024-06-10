@@ -72,8 +72,8 @@ void loop() {
   }
 }
 
-
-// desenho da tela inicial do display
+// Funções de tela
+// Tela Incial
 int telaInicial() {
   display.clear();
   String titulo = "Bobinadeira V1.0";
@@ -87,6 +87,7 @@ int telaInicial() {
   return 0;
 }
 
+// Tela Inicial de Bobinar
 int telaBobinar() {
   display.clear();
   String titulo = "Bobinar";
@@ -102,6 +103,7 @@ int telaBobinar() {
   return 1;
 }
 
+// Tela de calibragem
 int telaRecalibrar(String tempo) {
   display.clear();
   String linha1 = "Recalibrando";
@@ -114,7 +116,7 @@ int telaRecalibrar(String tempo) {
   return 2;
 }
 
-// tela de erro do teclado
+// Tela de erro
 int selecaoInvalida() {
   display.clear();
   String linha1 = "Comando Invalido!";
@@ -128,8 +130,9 @@ int selecaoInvalida() {
   return -1;
 }
 
+// Função para centralizar o texto
 int centralizarDisplay(String texto) {
-  int posicao = (20 - texto.length()) / 2;
+  int posicao = (DISPLAY_COLUMNS - texto.length()) / 2;
 
   if (posicao < 0) {
     return 0;
