@@ -4,3 +4,6 @@
 
 #ignora os arquivos de configuração do VS Code
 .vscode
+
+#ignora as builds para simulação
+build/
