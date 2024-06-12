@@ -84,7 +84,7 @@ void loop() {
 
 // Função para rodar o motor
 void rodarPasso(int voltasAlvo, int rpmAlvo, bool direcao) {
-  float tempoEstimado = voltasAlvo / (rpmAlvo / 60); // Calcula o tempo estimado do processo
+  float tempoEstimado = 1.0 * voltasAlvo / (rpmAlvo / 60); // Calcula o tempo estimado do processo
   float deslocamentoEstimado = PASSO_FUSO * voltasAlvo; // Calucla o deslocamento estimado
 
   // Exibe os parâmetros configurados e os parâmetros estimados (deslocamento e tempo)
