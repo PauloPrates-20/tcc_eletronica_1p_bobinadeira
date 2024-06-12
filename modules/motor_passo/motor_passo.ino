@@ -5,8 +5,8 @@
 #define ENABLE 2 // Pino enable do motor de passo
 
 // Fins de curso
-#define FIM1 12 // Pino do fim de curso 1
-#define FIM2 13 // Pino do fim de curso 2
+#define FIM 12 // Pino do fim de curso 1
+#define INICIO 13 // Pino do fim de curso 2
 
 // Definição dos sentidos do motor
 #define FRENTE false
@@ -27,12 +27,12 @@ void setup() {
   Serial.begin(9600);
 
   // Definição dos pinos dos fins de curso como entrada
-  pinMode(FIM1, INPUT);
-  pinMode(FIM2, INPUT);
+  pinMode(FIM, INPUT);
+  pinMode(INICIO, INPUT);
 
   // Acionamento do pull-up interno para os fins de curso
-  digitalWrite(FIM1, HIGH);
-  digitalWrite(FIM2, HIGH);
+  digitalWrite(FIM, HIGH);
+  digitalWrite(INICIO, HIGH);
 
   // Definição dos pinos do motor de passo como saída
   pinMode(ENABLE, OUTPUT);
@@ -48,11 +48,11 @@ void setup() {
 
 void loop() {
   // Teste dos fins de curso
-  // if (!digitalRead(FIM1) || !digitalRead(FIM2)) {
-  //   Serial.println(digitalRead(FIM1));
-  //   Serial.println(digitalRead(FIM2));
-  //   delay(1000);
-  // }
+  if (!digitalRead(FIM) || !digitalRead(INICIO)) {
+    Serial.println(digitalRead(FIM));
+    Serial.println(digitalRead(INICIO));
+    delay(1000);
+  }
 
   // Leitura do comando inicial
   if (Serial.available() > 0) { // Verifica se existem dados para leitura na Serial
@@ -124,7 +124,7 @@ void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
   unsigned long tempoAtual = millis(); // Inicia o temporizador
 
   // Verifica se há espaço para o deslocamento
-  if ((direcao == FRENTE && digitalRead(FIM1)) || (direcao == TRAS && digitalRead(FIM2))) {
+  if ((direcao == FRENTE && digitalRead(FIM)) || (direcao == TRAS && digitalRead(INICIO))) {
   // Atua o motor pelo número de voltas específicado
     while (voltaAtual < voltasAlvo) {
       // Pulso PWM do motor de passo
@@ -150,7 +150,7 @@ void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
       }
 
       // Verifica se o motor chegou ao fim do eixo linear
-      if ((direcao == FRENTE && !digitalRead(FIM1)) || direcao == TRAS && !digitalRead(FIM2)) {
+      if ((direcao == FRENTE && !digitalRead(FIM)) || direcao == TRAS && !digitalRead(INICIO)) {
         Serial.println("\n");
         Serial.println("Processo interrompido: fim de curso acionado.");
         break;
@@ -180,7 +180,7 @@ void zerarMotorPasso() {
   digitalWrite(ENABLE, LOW); // Habilita o motor de passo
 
   // Atua o motor de passo até o fim de curso
-  while (digitalRead(FIM2)) {
+  while (digitalRead(INICIO)) {
     digitalWrite(PWM_PASSO, HIGH);
     delayMicroseconds(duracaoPulso);
     digitalWrite(PWM_PASSO, LOW);
