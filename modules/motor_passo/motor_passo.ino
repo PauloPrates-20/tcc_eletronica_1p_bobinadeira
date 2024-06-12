@@ -43,15 +43,17 @@ void setup() {
   digitalWrite(ENABLE, HIGH); // Desabilita o motor
   digitalWrite(DIRECAO_PASSO, direcao); // Define a direção inicial do motor
 
-  zerarMotorPasso();
+  zerarMotorPasso(); // Calibra o motor de passo para o zero máquina
 }
 
 void loop() {
+  // Teste dos fins de curso
   // if (!digitalRead(FIM1) || !digitalRead(FIM2)) {
   //   Serial.println(digitalRead(FIM1));
   //   Serial.println(digitalRead(FIM2));
   //   delay(1000);
   // }
+
   // Leitura do comando inicial
   if (Serial.available() > 0) { // Verifica se existem dados para leitura na Serial
     String comando = Serial.readStringUntil('\n'); // Lê o comando
@@ -169,12 +171,15 @@ void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
   Serial.println(" segundos");
 }
 
+// Função para calibrar o motor (zero máquina)
 void zerarMotorPasso() {
-  unsigned long duracaoPulso = (1.0 / ((120 / 60) * 1600) * 1000000) / 2;
+  unsigned long duracaoPulso = (1.0 / ((120 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
 
-  digitalWrite(DIRECAO_PASSO, TRAS);
-  digitalWrite(ENABLE, LOW);
+  // Configuração do motor
+  digitalWrite(DIRECAO_PASSO, TRAS); // Define o sentido em direção ao zero
+  digitalWrite(ENABLE, LOW); // Habilita o motor de passo
 
+  // Atua o motor de passo até o fim de curso
   while (digitalRead(FIM2)) {
     digitalWrite(PWM_PASSO, HIGH);
     delayMicroseconds(duracaoPulso);
@@ -182,7 +187,7 @@ void zerarMotorPasso() {
     delayMicroseconds(duracaoPulso);
   }
 
-  digitalWrite(ENABLE, HIGH);
+  digitalWrite(ENABLE, HIGH); // Desabilita o motor de passo
 }
 
 // Função para esperar entrada do usuário
