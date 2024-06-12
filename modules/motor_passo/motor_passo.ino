@@ -1,7 +1,7 @@
 // Definição de pinagem
 // Motor de passo
 #define PWM_PASSO 5 // Pino PWM do motor de passo
-#define DIR_PASSO 4 // Pino de direção do motor de passo
+#define DIRECAO_PASSO 4 // Pino de direção do motor de passo
 #define ENABLE 2 // Pino enable do motor de passo
 
 // Fins de curso
@@ -20,7 +20,7 @@ const int PASSO_FUSO = 8; // Passo do fuso por volta em mm
 // Variáveis de controle do motor de passo
 int voltas = 0; // Voltas iniciais
 int rpm = 120; // RPM inicial do motor de passo
-bool dir = FRENTE; // Direção inicial do motor de passo
+bool direcao = FRENTE; // Direção inicial do motor de passo
 
 void setup() {
   // Inicialização do Serial
@@ -36,12 +36,12 @@ void setup() {
 
   // Definição dos pinos do motor de passo como saída
   pinMode(ENABLE, OUTPUT);
-  pinMode(DIR_PASSO, OUTPUT);
+  pinMode(DIRECAO_PASSO, OUTPUT);
   pinMode(PWM_PASSO, OUTPUT);
 
   // Configuração inicial do motor de passo
   digitalWrite(ENABLE, HIGH); // Desabilita o motor
-  digitalWrite(DIR_PASSO, dir); // Define a direção inicial do motor
+  digitalWrite(DIRECAO_PASSO, direcao); // Define a direção inicial do motor
 }
 
 void loop() {
@@ -61,10 +61,10 @@ void loop() {
       Serial.print("Direção (0 - Frente | 1 - Trás): ");
       esperarInput();
       if (Serial.readStringUntil('\n').toInt() == 0) {
-        dir = FRENTE;
+        direcao = FRENTE;
         Serial.println("Frente");
       } else {
-        dir = TRAS;
+        direcao = TRAS;
         Serial.println("Trás");
       }
 
@@ -75,7 +75,7 @@ void loop() {
       Serial.println(rpm);
 
       // Inicia a rotina do motor
-      rodarPasso(voltas, rpm, dir);
+      rodarPasso(voltas, rpm, direcao);
     }
   }
 }
@@ -83,7 +83,7 @@ void loop() {
 // Funções de controle
 
 // Função para rodar o motor
-void rodarPasso(int voltasAlvo, int rpmAlvo, bool dir) {
+void rodarPasso(int voltasAlvo, int rpmAlvo, bool direcao) {
   float tempoEstimado = voltasAlvo / (rpmAlvo / 60); // Calcula o tempo estimado do processo
   float deslocamentoEstimado = PASSO_FUSO * voltasAlvo; // Calucla o deslocamento estimado
 
@@ -102,7 +102,7 @@ void rodarPasso(int voltasAlvo, int rpmAlvo, bool dir) {
   Serial.println("mm\n");
 
   digitalWrite(ENABLE, LOW); // Habilita o motor
-  digitalWrite(DIR_PASSO, dir); // Configura a direção do motor
+  digitalWrite(DIRECAO_PASSO, direcao); // Configura a direção do motor
 
   // Calcula a duração dos pulsos com base no rpm
   const unsigned long duracao_pulsos = ((1.0 / ((rpmAlvo / 60.0) * PULSOS_REVOLUCAO)) * 1000000) / 2; // Duração dos pulsos em micro segundos
@@ -115,7 +115,7 @@ void rodarPasso(int voltasAlvo, int rpmAlvo, bool dir) {
   unsigned long tempoAtual = millis(); // Inicia o temporizador
 
   // Verifica se há espaço para o deslocamento
-  if ((dir == FRENTE && digitalRead(FIM1)) || (dir == TRAS && digitalRead(FIM2))) {
+  if ((direcao == FRENTE && digitalRead(FIM1)) || (direcao == TRAS && digitalRead(FIM2))) {
   // Atua o motor pelo número de voltas específicado
     while (voltaAtual < voltasAlvo) {
       // Pulso PWM do motor de passo
@@ -141,7 +141,7 @@ void rodarPasso(int voltasAlvo, int rpmAlvo, bool dir) {
       }
 
       // Verifica se o motor chegou ao fim do eixo linear
-      if ((dir == FRENTE && !digitalRead(FIM1)) || dir == TRAS && !digitalRead(FIM2)) {
+      if ((direcao == FRENTE && !digitalRead(FIM1)) || direcao == TRAS && !digitalRead(FIM2)) {
         Serial.println("\n");
         Serial.println("Processo interrompido: fim de curso acionado.");
         break;
