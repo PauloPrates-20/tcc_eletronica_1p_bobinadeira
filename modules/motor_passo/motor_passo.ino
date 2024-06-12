@@ -42,9 +42,16 @@ void setup() {
   // Configuração inicial do motor de passo
   digitalWrite(ENABLE, HIGH); // Desabilita o motor
   digitalWrite(DIRECAO_PASSO, direcao); // Define a direção inicial do motor
+
+  zerarMotorPasso();
 }
 
 void loop() {
+  // if (!digitalRead(FIM1) || !digitalRead(FIM2)) {
+  //   Serial.println(digitalRead(FIM1));
+  //   Serial.println(digitalRead(FIM2));
+  //   delay(1000);
+  // }
   // Leitura do comando inicial
   if (Serial.available() > 0) { // Verifica se existem dados para leitura na Serial
     String comando = Serial.readStringUntil('\n'); // Lê o comando
@@ -83,8 +90,8 @@ void loop() {
 // Funções de controle
 
 // Função para rodar o motor
-void rodarPasso(int voltasAlvo, int rpmAlvo, bool direcao) {
-  float tempoEstimado = 1.0 * voltasAlvo / (rpmAlvo / 60); // Calcula o tempo estimado do processo
+void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
+  float tempoEstimado = voltasAlvo / (rpmAlvo / 60); // Calcula o tempo estimado do processo
   float deslocamentoEstimado = PASSO_FUSO * voltasAlvo; // Calucla o deslocamento estimado
 
   // Exibe os parâmetros configurados e os parâmetros estimados (deslocamento e tempo)
@@ -150,6 +157,7 @@ void rodarPasso(int voltasAlvo, int rpmAlvo, bool direcao) {
   } else {
     Serial.println("Não foi possível iniciar o processo: sem espaço para o deslocamento.");
   }
+  float tempoTotal = (millis() - tempoAtual) / 1000.0;
 
   digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
 
@@ -157,8 +165,24 @@ void rodarPasso(int voltasAlvo, int rpmAlvo, bool direcao) {
   Serial.println("\n"); // Quebra de linha
   Serial.println("Pronto!");
   Serial.print("Tempo total: ");
-  Serial.print((millis() - tempoAtual) / 1000); // Calcula e exibe o tempo real de execução da rotina
+  Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
   Serial.println(" segundos");
+}
+
+void zerarMotorPasso() {
+  unsigned long duracaoPulso = (1.0 / ((120 / 60) * 1600) * 1000000) / 2;
+
+  digitalWrite(DIRECAO_PASSO, TRAS);
+  digitalWrite(ENABLE, LOW);
+
+  while (digitalRead(FIM2)) {
+    digitalWrite(PWM_PASSO, HIGH);
+    delayMicroseconds(duracaoPulso);
+    digitalWrite(PWM_PASSO, LOW);
+    delayMicroseconds(duracaoPulso);
+  }
+
+  digitalWrite(ENABLE, HIGH);
 }
 
 // Função para esperar entrada do usuário
