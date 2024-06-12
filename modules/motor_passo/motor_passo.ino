@@ -1,6 +1,16 @@
+// Definição de pinagem
+// Motor de passo
 #define PWM_PASSO 5 // Pino PWM do motor de passo
 #define DIR_PASSO 4 // Pino de direção do motor de passo
 #define ENABLE 2 // Pino enable do motor de passo
+
+// Fins de curso
+#define FIM1 12 // Pino do fim de curso 1
+#define FIM2 13 // Pino do fim de curso 2
+
+// Definição dos sentidos do motor
+#define FRENTE false
+#define TRAS true
 
 const int PASSOS_REVOLUCAO = 200; // Quantidade de passos por volta do motor de passo
 const int PULSOS_REVOLUCAO = 1600; // Quantidade de pulsos por volta do motor de passo
@@ -10,13 +20,21 @@ const int PASSO_FUSO = 8; // Passo do fuso por volta em mm
 // Variáveis de controle do motor de passo
 int voltas = 0; // Voltas iniciais
 int rpm = 120; // RPM inicial do motor de passo
-bool dir = false; // Direção inicial do motor de passo
+bool dir = FRENTE; // Direção inicial do motor de passo
 
 void setup() {
   // Inicialização do Serial
   Serial.begin(9600);
 
-  // Definição de modo dos pinos do motor de passo
+  // Definição dos pinos dos fins de curso como entrada
+  pinMode(FIM1, INPUT);
+  pinMode(FIM2, INPUT);
+
+  // Acionamento do pull-up interno para os fins de curso
+  digitalWrite(FIM1, HIGH);
+  digitalWrite(FIM2, HIGH);
+
+  // Definição dos pinos do motor de passo como saída
   pinMode(ENABLE, OUTPUT);
   pinMode(DIR_PASSO, OUTPUT);
   pinMode(PWM_PASSO, OUTPUT);
@@ -43,10 +61,10 @@ void loop() {
       Serial.print("Direção (0 - Frente | 1 - Trás): ");
       esperarInput();
       if (Serial.readStringUntil('\n').toInt() == 0) {
-        dir = false;
+        dir = FRENTE;
         Serial.println("Frente");
       } else {
-        dir = true;
+        dir = TRAS;
         Serial.println("Trás");
       }
 
@@ -96,29 +114,41 @@ void rodarPasso(int voltasAlvo, int rpmAlvo, bool dir) {
 
   unsigned long tempoAtual = millis(); // Inicia o temporizador
 
+  // Verifica se há espaço para o deslocamento
+  if ((dir == FRENTE && digitalRead(FIM1)) || (dir == TRAS && digitalRead(FIM2))) {
   // Atua o motor pelo número de voltas específicado
-  while (voltaAtual < voltasAlvo) {
-    // Pulso PWM do motor de passo
-    digitalWrite(PWM_PASSO, HIGH);
-    delayMicroseconds(duracao_pulsos);
-    digitalWrite(PWM_PASSO, LOW);
-    delayMicroseconds(duracao_pulsos); 
-    pulsos++; // Incrementa a quantidade de pulsos
+    while (voltaAtual < voltasAlvo) {
+      // Pulso PWM do motor de passo
+      digitalWrite(PWM_PASSO, HIGH);
+      delayMicroseconds(duracao_pulsos);
+      digitalWrite(PWM_PASSO, LOW);
+      delayMicroseconds(duracao_pulsos); 
+      pulsos++; // Incrementa a quantidade de pulsos
 
-    // Verificação de progresso da rotina
-    if (pulsos == PULSOS_PASSO) {
-      pulsos = 0; // Reset da contagem de pulsos
-      passos++; // Incrementação dos passos
+      // Verificação de progresso da rotina
+      if (pulsos == PULSOS_PASSO) {
+        pulsos = 0; // Reset da contagem de pulsos
+        passos++; // Incrementação dos passos
 
-      if (passos == PASSOS_REVOLUCAO) {
-        passos = 0; // Reset dos passos
-        voltaAtual++; // Incrementação da volta
+        if (passos == PASSOS_REVOLUCAO) {
+          passos = 0; // Reset dos passos
+          voltaAtual++; // Incrementação da volta
 
-        // Exibição das voltas
-        Serial.print(voltaAtual);
-        Serial.print(" ");
+          // Exibição das voltas
+          Serial.print(voltaAtual);
+          Serial.print(" ");
+        }
+      }
+
+      // Verifica se o motor chegou ao fim do eixo linear
+      if ((dir == FRENTE && !digitalRead(FIM1)) || dir == TRAS && !digitalRead(FIM2)) {
+        Serial.println("\n");
+        Serial.println("Processo interrompido: fim de curso acionado.");
+        break;
       }
     }
+  } else {
+    Serial.println("Não foi possível iniciar o processo: sem espaço para o deslocamento.");
   }
 
   digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
