@@ -4,6 +4,9 @@
 #define DIRECAO_PASSO 4 // Pino de direção do motor de passo
 #define ENABLE 2 // Pino enable do motor de passo
 
+// Motor DC
+#define TESTE_DC 6 // Pino para teste do acionamento do motor DC
+
 // Fins de curso
 #define FIM 12 // Pino do fim de curso 1
 #define INICIO 13 // Pino do fim de curso 2
@@ -42,6 +45,12 @@ void setup() {
   // Configuração inicial do motor de passo
   digitalWrite(ENABLE, HIGH); // Desabilita o motor
   digitalWrite(DIRECAO_PASSO, direcao); // Define a direção inicial do motor
+
+  // Definição dos pinos do motor DC
+  pinMode(TESTE_DC, OUTPUT);
+
+  // Configuração inicial do motor DC
+  digitalWrite(TESTE_DC, LOW);
 
   zerarMotorPasso(); // Calibra o motor de passo para o zero máquina
 }
@@ -127,6 +136,8 @@ void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
   if ((direcao == FRENTE && digitalRead(FIM)) || (direcao == TRAS && digitalRead(INICIO))) {
   // Atua o motor pelo número de voltas específicado
     while (voltaAtual < voltasAlvo) {
+      digitalWrite(TESTE_DC, HIGH); // Liga o motor DC
+
       // Pulso PWM do motor de passo
       digitalWrite(PWM_PASSO, HIGH);
       delayMicroseconds(duracao_pulsos);
@@ -161,6 +172,7 @@ void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
   }
   float tempoTotal = (millis() - tempoAtual) / 1000.0;
 
+  digitalWrite(TESTE_DC, LOW); // Desliga o motor DC
   digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
 
   // Feedback para o usuário
