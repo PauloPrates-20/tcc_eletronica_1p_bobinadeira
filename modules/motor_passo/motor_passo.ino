@@ -48,11 +48,11 @@ void setup() {
 
 void loop() {
   // Teste dos fins de curso
-  if (!digitalRead(FIM) || !digitalRead(INICIO)) {
-    Serial.println(digitalRead(FIM));
-    Serial.println(digitalRead(INICIO));
-    delay(1000);
-  }
+  // if (!digitalRead(FIM) || !digitalRead(INICIO)) {
+  //   Serial.println(digitalRead(FIM));
+  //   Serial.println(digitalRead(INICIO));
+  //   delay(1000);
+  // }
 
   // Leitura do comando inicial
   if (Serial.available() > 0) { // Verifica se existem dados para leitura na Serial
@@ -173,7 +173,7 @@ void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
 
 // Função para calibrar o motor (zero máquina)
 void zerarMotorPasso() {
-  unsigned long duracaoPulso = (1.0 / ((120 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
+  unsigned long duracaoPulso = (1.0 / ((240 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
 
   // Configuração do motor
   digitalWrite(DIRECAO_PASSO, TRAS); // Define o sentido em direção ao zero
