@@ -62,7 +62,9 @@ void setup() {
   // Configuração inicial do motor DC
   digitalWrite(TESTE_DC, LOW);
 
+  Serial.println("Calibrando...");
   zerarMotorPasso(); // Calibra o motor de passo para o zero máquina
+  Serial.println("Motores calibrados.");
 }
 
 void loop() {
@@ -159,7 +161,6 @@ void zerarMotorPasso() {
   }
 
   digitalWrite(ENABLE, HIGH); // Desabilita o motor de passo
-  Serial.println("Calibrado!");
 }
 
 // Função para rodar o motor
@@ -284,7 +285,7 @@ void bobinar() {
   Serial.println("Pronto!");
   Serial.print("Tempo total: ");
   Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
-  Serial.println(" segundos");
+  Serial.println(" segundos\n");
 }
 
 
