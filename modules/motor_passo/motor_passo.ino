@@ -174,7 +174,6 @@ void bobinar() {
   offset();
 
   // Incializa as variáveis de supervisão da rotina
-  bool primeiraVolta = true;
   int pulsos = 0; 
   int passos = 0;
   int espiraAtual = 0;
@@ -263,10 +262,6 @@ void bobinar() {
 
       Serial.print("Camada: ");
       Serial.println(camadaAtual);
-    }
-
-    if (digitalRead(INICIO)) {
-      primeiraVolta = false;
     }
 
     if (!digitalRead(FIM) || !digitalRead(INICIO)) {
