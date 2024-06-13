@@ -58,7 +58,9 @@ void setup() {
 void loop() {
   // Teste dos fins de curso
   // if (!digitalRead(FIM) || !digitalRead(INICIO)) {
+  //   Serial.print("Início: ");
   //   Serial.println(digitalRead(FIM));
+  //   Serial.print("Fim: ");
   //   Serial.println(digitalRead(INICIO));
   //   delay(1000);
   // }
