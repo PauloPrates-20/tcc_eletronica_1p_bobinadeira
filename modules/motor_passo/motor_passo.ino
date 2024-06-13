@@ -15,15 +15,25 @@
 #define FRENTE false
 #define TRAS true
 
+// Parâmetros de movimento linear
 const int PASSOS_REVOLUCAO = 200; // Quantidade de passos por volta do motor de passo
 const int PULSOS_REVOLUCAO = 1600; // Quantidade de pulsos por volta do motor de passo
 const int PULSOS_PASSO = PULSOS_REVOLUCAO / PASSOS_REVOLUCAO; // Quantidade de pulsos por passo do motor de passo
 const int PASSO_FUSO = 8; // Passo do fuso por volta em mm
 
 // Variáveis de controle do motor de passo
-int voltas = 0; // Voltas iniciais
-int rpm = 120; // RPM inicial do motor de passo
+int rpmPasso; // RPM inicial do motor de passo
 bool direcao = FRENTE; // Direção inicial do motor de passo
+
+// Parâmetros do motor dc
+
+int rpmDc = 320; // RPM inicial do motor DC
+
+// Parâmetros do indutor
+float comprimento; // Comprimento interno do indutor em mm
+float diametro; // Bitola do fio em mm
+int espiras; // Quantidade de espiras do indutor
+
 
 void setup() {
   // Inicialização do Serial
@@ -58,9 +68,9 @@ void setup() {
 void loop() {
   // Teste dos fins de curso
   // if (!digitalRead(FIM) || !digitalRead(INICIO)) {
-  //   Serial.print("Início: ");
-  //   Serial.println(digitalRead(FIM));
   //   Serial.print("Fim: ");
+  //   Serial.println(digitalRead(FIM));
+  //   Serial.print("Início: ");
   //   Serial.println(digitalRead(INICIO));
   //   delay(1000);
   // }
@@ -71,123 +81,70 @@ void loop() {
 
     // Rotina de controle do motor de passo
     if (comando == "r") {
-      // Lê o número de voltas desejadas
-      Serial.print("Voltas: ");
+      // Lê a quantidade de espiras do indutor
+      Serial.print("Espiras: ");
       esperarInput();
-      voltas = Serial.readStringUntil('\n').toInt();
-      Serial.println(voltas);
+      espiras = Serial.readStringUntil('\n').toInt();
+      Serial.println(espiras);
 
-      // Lê a direção do motor
-      Serial.print("Direção (0 - Frente | 1 - Trás): ");
+      // Lê o comprimento do indutor
+      Serial.print("Comprimento (mm): ");
       esperarInput();
-      if (Serial.readStringUntil('\n').toInt() == 0) {
-        direcao = FRENTE;
-        Serial.println("Frente");
-      } else {
-        direcao = TRAS;
-        Serial.println("Trás");
-      }
+      comprimento = Serial.readStringUntil('\n').toFloat();
+      Serial.println(comprimento);
 
-      // Lê o rpm desejado
-      Serial.print("RPM: ");
+      // Lê o diâmetro do fio
+      Serial.print("Bitola (mm): ");
       esperarInput();
-      rpm = Serial.readStringUntil('\n').toInt();
-      Serial.println(rpm);
+      diametro = Serial.readStringUntil('\n').toFloat();
+      Serial.println(diametro);
+
+      Serial.println(""); // Quebra de linha
 
       // Inicia a rotina do motor
-      rodarPasso(voltas, rpm, direcao);
+      bobinar();
     }
   }
 }
 
 // Funções de controle
 
-// Função para rodar o motor
-void rodarPasso(float voltasAlvo, float rpmAlvo, bool direcao) {
-  float tempoEstimado = voltasAlvo / (rpmAlvo / 60); // Calcula o tempo estimado do processo
-  float deslocamentoEstimado = PASSO_FUSO * voltasAlvo; // Calucla o deslocamento estimado
+// Função de offset do motor;
+void offset() {
+  const unsigned long DURACAO_PULSOS = (1.0 / ((240 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
 
-  // Exibe os parâmetros configurados e os parâmetros estimados (deslocamento e tempo)
-  Serial.print("\nRodando ");
-  Serial.print(voltasAlvo);
-  Serial.print(" voltas");
-  Serial.print(" a ");
-  Serial.print(rpmAlvo);
-  Serial.println("RPM");
-  Serial.print("Tempo estimado: ");
-  Serial.print(tempoEstimado);
-  Serial.println(" segundos");
-  Serial.print("Deslocamento estimado: ");
-  Serial.print(deslocamentoEstimado);
-  Serial.println("mm\n");
-
-  digitalWrite(ENABLE, LOW); // Habilita o motor
-  digitalWrite(DIRECAO_PASSO, direcao); // Configura a direção do motor
-
-  // Calcula a duração dos pulsos com base no rpm
-  const unsigned long duracao_pulsos = ((1.0 / ((rpmAlvo / 60.0) * PULSOS_REVOLUCAO)) * 1000000) / 2; // Duração dos pulsos em micro segundos
-
-  // Incializa as variáveis de supervisão da rotina
-  int pulsos = 0; 
-  int passos = 0;
   int voltaAtual = 0;
+  int pulsos = 0;
+  int passos = 0;
 
-  unsigned long tempoAtual = millis(); // Inicia o temporizador
+  digitalWrite(DIRECAO_PASSO, FRENTE);
+  digitalWrite(ENABLE, LOW);
 
-  // Verifica se há espaço para o deslocamento
-  if ((direcao == FRENTE && digitalRead(FIM)) || (direcao == TRAS && digitalRead(INICIO))) {
-  // Atua o motor pelo número de voltas específicado
-    while (voltaAtual < voltasAlvo) {
-      digitalWrite(TESTE_DC, HIGH); // Liga o motor DC
+  while (voltaAtual < 2) {
+    digitalWrite(PWM_PASSO, HIGH);
+    delayMicroseconds(DURACAO_PULSOS);
+    digitalWrite(PWM_PASSO, LOW);
+    delayMicroseconds(DURACAO_PULSOS); 
+    pulsos++; // Incrementa a quantidade de pulsos
 
-      // Pulso PWM do motor de passo
-      digitalWrite(PWM_PASSO, HIGH);
-      delayMicroseconds(duracao_pulsos);
-      digitalWrite(PWM_PASSO, LOW);
-      delayMicroseconds(duracao_pulsos); 
-      pulsos++; // Incrementa a quantidade de pulsos
+    if (pulsos == PULSOS_PASSO) {
+      pulsos = 0;
+      passos++;
 
-      // Verificação de progresso da rotina
-      if (pulsos == PULSOS_PASSO) {
-        pulsos = 0; // Reset da contagem de pulsos
-        passos++; // Incrementação dos passos
-
-        if (passos == PASSOS_REVOLUCAO) {
-          passos = 0; // Reset dos passos
-          voltaAtual++; // Incrementação da volta
-
-          // Exibição das voltas
-          Serial.print(voltaAtual);
-          Serial.print(" ");
-        }
-      }
-
-      // Verifica se o motor chegou ao fim do eixo linear
-      if ((direcao == FRENTE && !digitalRead(FIM)) || direcao == TRAS && !digitalRead(INICIO)) {
-        Serial.println("\n");
-        Serial.println("Processo interrompido: fim de curso acionado.");
-        break;
+      if (passos == PASSOS_REVOLUCAO) {
+        passos = 0;
+        voltaAtual++;
       }
     }
-  } else {
-    Serial.println("Não foi possível iniciar o processo: sem espaço para o deslocamento.");
   }
-  float tempoTotal = (millis() - tempoAtual) / 1000.0;
 
-  digitalWrite(TESTE_DC, LOW); // Desliga o motor DC
-  digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
-
-  // Feedback para o usuário
-  Serial.println("\n"); // Quebra de linha
-  Serial.println("Pronto!");
-  Serial.print("Tempo total: ");
-  Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
-  Serial.println(" segundos");
+  digitalWrite(ENABLE, HIGH);
+  delay(1000);
 }
 
 // Função para calibrar o motor (zero máquina)
 void zerarMotorPasso() {
-  unsigned long duracaoPulso = (1.0 / ((240 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
+  const unsigned long duracaoPulso = (1.0 / ((240 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
 
   // Configuração do motor
   digitalWrite(DIRECAO_PASSO, TRAS); // Define o sentido em direção ao zero
@@ -202,11 +159,140 @@ void zerarMotorPasso() {
   }
 
   digitalWrite(ENABLE, HIGH); // Desabilita o motor de passo
+  Serial.println("Calibrado!");
 }
+
+// Função para rodar o motor
+void bobinar() {
+  // Retorna o motor ao zero máquina antes de iniciar o processo
+  if (digitalRead(INICIO)) {
+    zerarMotorPasso();
+    delay(1000);
+  }
+
+  offset();
+
+  // Incializa as variáveis de supervisão da rotina
+  bool primeiraVolta = true;
+  int pulsos = 0; 
+  int passos = 0;
+  int espiraAtual = 0;
+  int espirasTotais = 0;
+  int camadaAtual = 1;
+
+  int espirasCamada = comprimento / diametro; // Calcula o número de espiras por camada
+  Serial.print("Espiras por camada: ");
+  Serial.println(espirasCamada);
+  
+  int camadas = ceil(espiras / espirasCamada) + 1;
+  Serial.print("Camadas: ");
+  Serial.println(camadas);
+
+  rpmPasso = (rpmDc * diametro) / PASSO_FUSO; // Calcula o RPM do motor de passo
+  // Serial.print("RPM Passo: ");
+  // Serial.println(rpmPasso);
+
+  // Calcula a duração dos pulsos com base no rpm
+  const unsigned long DURACAO_PULSOS = ((1.0 / ((rpmPasso / 60.0) * PULSOS_REVOLUCAO)) * 1000000); // Duração dos pulsos em micro segundos
+  // Serial.print("Duração dos pulsos: ");
+  // Serial.println(DURACAO_PULSOS);
+
+  int passosEspira = diametro / (1.0 * PASSO_FUSO / PASSOS_REVOLUCAO); // Calcula a quantidade de passos para cada espira do indutor
+  // Serial.print("Passos por espira: ");
+  // Serial.println(passosEspira);
+
+  float tempoEstimado = 1.0 * espiras * passosEspira / ((1.0 / (DURACAO_PULSOS / 1000000.0)) / PULSOS_PASSO); // Calcula o tempo estimado do processo
+
+  // Exibe os parâmetros configurados e os parâmetros estimados (deslocamento e tempo)
+  Serial.print("Tempo estimado: ");
+  Serial.print(tempoEstimado);
+  Serial.println(" segundos");
+
+  Serial.print("\n"); // Quebra de linha
+
+  digitalWrite(ENABLE, LOW); // Habilita o motor
+  direcao = FRENTE;
+  digitalWrite(DIRECAO_PASSO, direcao); // Configura a direção do motor
+
+  unsigned long tempoAtual = millis(); // Inicia o temporizador
+  unsigned long ultimoPulso = micros(); // Temporizador dos pulsos
+
+  // Atua o motor pelo número de voltas específicado
+  while (espirasTotais < espiras) {
+    digitalWrite(TESTE_DC, HIGH); // Liga o motor DC
+
+    // Pulso PWM do motor de passo
+    if (micros() - ultimoPulso >= DURACAO_PULSOS) {
+      ultimoPulso = micros();
+      digitalWrite(PWM_PASSO, HIGH);
+      delayMicroseconds(1);
+      digitalWrite(PWM_PASSO, LOW);
+      pulsos++; // Incrementa a quantidade de pulsos
+    }
+
+    // Verificação de progresso da rotina
+    if (pulsos == PULSOS_PASSO) {
+      pulsos = 0; // Reset da contagem de pulsos
+      passos++; // Incrementação dos passos
+
+      if (passos == passosEspira) {
+        passos = 0;
+        espiraAtual++; // Incrementação de espiras da camada
+        espirasTotais++; // Incrementação do total de espiras
+
+        // Exibição das voltas
+        Serial.print(espirasTotais);
+        Serial.print(" ");
+
+        // Quebra a linha a cada 30 espiras
+        if (espiraAtual % 30 == 0) {
+          Serial.print("\n");
+        }
+      }
+    }
+
+    // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
+    if (espiraAtual == espirasCamada) {
+      direcao = !direcao;
+
+      camadaAtual++;
+      espiraAtual = 0;
+
+      digitalWrite(DIRECAO_PASSO, direcao);
+
+      Serial.print("Camada: ");
+      Serial.println(camadaAtual);
+    }
+
+    if (digitalRead(INICIO)) {
+      primeiraVolta = false;
+    }
+
+    if (!digitalRead(FIM) || !digitalRead(INICIO)) {
+      Serial.println("Processo interrompido: fim de curso acionado.");
+      break;
+    }
+  }
+
+  float tempoTotal = (millis() - tempoAtual) / 1000.0;
+
+  digitalWrite(TESTE_DC, LOW); // Desliga o motor DC
+  digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
+
+  // Feedback para o usuário
+  Serial.println("\n"); // Quebra de linha
+  Serial.println("Pronto!");
+  Serial.print("Tempo total: ");
+  Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
+  Serial.println(" segundos");
+}
+
+
+
 
 // Função para esperar entrada do usuário
 void esperarInput() {
   while (Serial.available() == 0) {
-
+    
   }
 }
