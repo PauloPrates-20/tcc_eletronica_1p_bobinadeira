@@ -108,6 +108,10 @@ void loop() {
       bobinar();
     } else if (comando == "u" && salvo) {
       bobinar();
+    } else if (comando == "c") {
+      Serial.println("Calibrando...");
+      zerarMotorPasso();
+      Serial.println("Motores calibrados.");
     }
   }
 }
