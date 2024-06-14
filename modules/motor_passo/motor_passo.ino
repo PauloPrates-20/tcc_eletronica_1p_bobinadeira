@@ -27,7 +27,7 @@ bool direcao = FRENTE; // Direção inicial do motor de passo
 
 // Parâmetros do motor dc
 
-int rpmDc = 320; // RPM inicial do motor DC
+int rpmDc = 300; // RPM inicial do motor DC
 
 // Parâmetros do indutor
 float comprimento; // Comprimento interno do indutor em mm
@@ -122,14 +122,15 @@ void loop() {
 void offset() {
   const unsigned long DURACAO_PULSOS = (1.0 / ((240 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
 
-  int voltaAtual = 0;
   int pulsos = 0;
   int passos = 0;
+  float deslocamento = 3.00;
+  int passosTotais = deslocamento / (1.0 * PASSO_FUSO / PASSOS_REVOLUCAO);
 
   digitalWrite(DIRECAO_PASSO, FRENTE);
   digitalWrite(ENABLE, LOW);
 
-  while (voltaAtual < 2) {
+  while (passos < passosTotais) {
     digitalWrite(PWM_PASSO, HIGH);
     delayMicroseconds(DURACAO_PULSOS);
     digitalWrite(PWM_PASSO, LOW);
@@ -139,11 +140,6 @@ void offset() {
     if (pulsos == PULSOS_PASSO) {
       pulsos = 0;
       passos++;
-
-      if (passos == PASSOS_REVOLUCAO) {
-        passos = 0;
-        voltaAtual++;
-      }
     }
   }
 
@@ -272,7 +268,7 @@ void bobinar() {
       Serial.println(camadaAtual);
     }
 
-    if (!digitalRead(FIM) || !digitalRead(INICIO)) {
+    if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
       Serial.println("Processo interrompido: fim de curso acionado.");
       break;
     }
