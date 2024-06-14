@@ -32,8 +32,8 @@ int rpmDc = 320; // RPM inicial do motor DC
 // Parâmetros do indutor
 float comprimento; // Comprimento interno do indutor em mm
 float diametro; // Bitola do fio em mm
-int espiras; // Quantidade de espiras do indutor
-
+int espiras; // Quantidade de espiras do indutor]
+bool salvo = false;
 
 void setup() {
   // Inicialização do Serial
@@ -83,6 +83,7 @@ void loop() {
 
     // Rotina de controle do motor de passo
     if (comando == "r") {
+      salvo = false;
       // Lê a quantidade de espiras do indutor
       Serial.print("Espiras: ");
       esperarInput();
@@ -104,6 +105,8 @@ void loop() {
       Serial.println(""); // Quebra de linha
 
       // Inicia a rotina do motor
+      bobinar();
+    } else if (comando == "u" && salvo) {
       bobinar();
     }
   }
@@ -165,6 +168,7 @@ void zerarMotorPasso() {
 
 // Função para rodar o motor
 void bobinar() {
+  salvo = true;
   // Retorna o motor ao zero máquina antes de iniciar o processo
   if (digitalRead(INICIO)) {
     zerarMotorPasso();
