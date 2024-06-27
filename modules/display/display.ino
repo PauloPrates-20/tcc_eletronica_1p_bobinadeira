@@ -1,6 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 
-#define ENDERECO_DISPLAY 0x27
+#define ENDERECO_DISPLAY 0x38
 #define COLUNAS_DISPLAY 20
 #define LINHAS_DISPLAY 4
 
@@ -57,11 +57,35 @@ int telaBobinar() {
   display.setCursor(0, 1);
   display.print("1 - Novo Indutor");
   display.setCursor(0, 2);
-  display.print("2 - Carregar Indutor");
+  display.print("2 - Repetir Indutor");
   display.setCursor(0, 3);
   display.print("0 - Voltar");
 
   return 1;
+}
+
+int telaIndutor() {
+  display.clear();
+  String titulo = "Bobinar";
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(0, 1);
+  display.print("Espiras: ");
+  display.setCursor(0, 2);
+  display.print("Comprimento: ");
+  display.setCursor(0, 3);
+  display.print("Diâmetro (fio): ");
+}
+
+int telaProgresso() {
+  display.clear();
+  String titulo = "Andamento";
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(0, 2);
+  display.print("Espiras: ");
+  display.setCursor(0, 3);
+  display.print("Camadas: ");
 }
 
 // Tela de calibragem
