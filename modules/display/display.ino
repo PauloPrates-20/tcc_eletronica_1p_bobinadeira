@@ -20,7 +20,7 @@ Instanciamento do display
 endereço 0x27 no modelo físico
 endereço 0x38 para teste no proteus
 */
-LiquidCrystal_I2C display(ENDERECO_DISPLAY, COLUNAS_DISPLAY, LINHAS_DISPLAY);
+LiquidCrystal_I2C display(0x38, COLUNAS_DISPLAY, LINHAS_DISPLAY);
 
 // Função para centralizar o texto
 int centralizarDisplay(String texto) {
@@ -74,7 +74,7 @@ int telaIndutor() {
   display.setCursor(0, 2);
   display.print("Comprimento: ");
   display.setCursor(0, 3);
-  display.print("Diâmetro (fio): ");
+  display.print("Diametro (fio): ");
 }
 
 int telaProgresso() {
@@ -92,7 +92,7 @@ int telaProgresso() {
 int telaRecalibrar(String tempo) {
   display.clear();
   String linha1 = "Recalibrando";
-  String linha2 = "Aguarde " + tempo;
+  String linha2 = "Aguarde " + tempo + "s";
   display.setCursor(centralizarDisplay(linha1), 1);
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 2);
@@ -118,10 +118,40 @@ int selecaoInvalida() {
 // void setup e void loop apenas para teste individual. Excluir na integração.
 void setup() {
   // put your setup code here, to run once:
-
+  display.begin();
+  display.backlight();
+  Serial.begin(9600);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  if (Serial.available() > 0) {
+    char tela = Serial.read();
 
+    switch (tela) {
+      case '1':
+        telaInicial();
+        break;
+
+      case '2':
+        telaBobinar();
+        break;
+
+      case '3':
+        telaIndutor();
+        break;
+
+      case '4':
+        telaProgresso();
+        break;
+
+      case '5':
+        telaRecalibrar("3");
+        break;
+
+      case '6':
+        selecaoInvalida();
+        break;
+    }
+  }
 }
