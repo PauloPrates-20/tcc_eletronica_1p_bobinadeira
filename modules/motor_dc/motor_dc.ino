@@ -1,11 +1,26 @@
 #define PIN_MOTOR_DC 6
-#define PIN_ENCODER 20
+#define PIN_CLK 20
 
 int rpm = 350;
 volatile int pulsosEncoder = 0;
+volatile bool ultimoEstadoClk = LOW;
 
-void pulsoEncoder() {
-  pulsosEncoder++;
+unsigned long ultimoDebounce = 0;
+const unsigned long DEBOUNCE = 0;
+
+void lerEncoder() {
+  unsigned long tempoAtual = millis();
+  bool estadoClk = digitalRead(PIN_CLK);
+
+  if ((tempoAtual - ultimoDebounce) > DEBOUNCE && estadoClk != ultimoEstadoClk) {
+    if (estadoClk == HIGH) {
+    pulsosEncoder++;
+    }
+
+    ultimoDebounce = tempoAtual;
+  }
+
+  ultimoEstadoClk = estadoClk;
 }
 
 void ligarMotorDc() {
@@ -23,9 +38,9 @@ void medirRpmDc() {
 
   ligarMotorDc();
 
-  attachInterrupt(digitalPinToInterrupt(PIN_ENCODER), pulsoEncoder, RISING);
+  attachInterrupt(digitalPinToInterrupt(PIN_CLK), lerEncoder, CHANGE);
   while (millis() - tempo < 5000) { }
-  detachInterrupt(digitalPinToInterrupt(PIN_ENCODER));
+  detachInterrupt(digitalPinToInterrupt(PIN_CLK));
 
   desligarMotorDc();
 
@@ -40,7 +55,7 @@ void setup() {
   pinMode(PIN_MOTOR_DC, OUTPUT);
   digitalWrite(PIN_MOTOR_DC, LOW);
 
-  pinMode(PIN_ENCODER, INPUT_PULLUP);
+  pinMode(PIN_CLK, INPUT_PULLUP);
 
   Serial.begin(9600);
 }
