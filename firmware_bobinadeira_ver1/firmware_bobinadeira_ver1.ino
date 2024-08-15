@@ -32,7 +32,7 @@ volatile bool ultimoEstadoClk = LOW;
 
 // Temporizador de debounce (para evitar ruídos na leitura) (em milissegundos)
 unsigned long ultimoDebounce = 0;
-const unsigned long DEBOUNCE = 5;
+const unsigned long DEBOUNCE = 0;
 
 /* Motor de passo */
 // Parâmetros de movimento linear
@@ -67,8 +67,8 @@ void setup() {
 
   /* Fins de curso */
   // Definição dos pinos dos fins de curso como entrada
-  pinMode(FIM, INPUT);
-  pinMode(INICIO, INPUT);
+  pinMode(FIM, INPUT_PULLUP);
+  pinMode(INICIO, INPUT_PULLUP);
 
   // Acionamento do pull-up interno para os fins de curso
   digitalWrite(FIM, HIGH);
@@ -94,7 +94,7 @@ void loop() {
   //   Serial.println(digitalRead(FIM));
   //   Serial.print("Início: ");
   //   Serial.println(digitalRead(INICIO));
-  //   delay(1000);
+  //   delay(300);
   // }
 
   // Leitura do comando inicial
