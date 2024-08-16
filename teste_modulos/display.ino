@@ -75,13 +75,37 @@ int telaIndutor() {
 int telaParametro(String parametro, String valor) {
   display.clear();
 
+  String espacador = "";
+  String valorFormatado = valor;
+  if (valor.length() < 1) {
+    valorFormatado = "0";
+  }
+
+  if (parametro == "Diametro") {
+    if (valor.length() < 1) {
+      valorFormatado = "0";
+    } else if (valor.length() < 2) {
+      valorFormatado = "0.0" + valor;
+    } else if (valor.length() < 3) {
+      valorFormatado = "0." + valor;
+    } else {
+      int tamanhoOriginal = valor.length();
+      valorFormatado = valor.substring(0, tamanhoOriginal - 2) + "." + valor.substring(tamanhoOriginal - 2);
+    }
+  }
+
+  if (parametro != "Espiras") {
+    espacador = "mm";
+  }
+
   String titulo = "Definir " + parametro;
-  String linha1 = parametro + ": " + String(valor) + quadrado;
+  String linha1 = parametro + ": " + String(valorFormatado) + quadrado + espacador;
   String linha2 = "*)Aceitar #)Apagar";
+
 
   display.setCursor(centralizarDisplay(titulo), 0);
   display.print(titulo);
-  display.setCursor(centralizarDisplay(linha1), 1);
+  display.setCursor(0, 1);
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);
