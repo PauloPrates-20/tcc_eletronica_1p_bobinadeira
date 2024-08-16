@@ -1,3 +1,4 @@
+/* Funções auxiliares */
 // Função para centralizar o texto
 int centralizarDisplay(String texto) {
   int posicao = (COLUNAS_DISPLAY - texto.length()) / 2;
@@ -8,6 +9,14 @@ int centralizarDisplay(String texto) {
     return posicao;
   }
 }
+
+// Função para atualizar o progresso
+void atualizarAndamento(int espiras, int camadas) {
+  display.setCursor(8, 2);
+  display.print(espiras);
+  display.setCursor(8, 3);
+  display.print(camadas);
+} 
 
 /* Telas */
 // Tela Incial
