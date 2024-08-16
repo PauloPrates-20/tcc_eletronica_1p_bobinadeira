@@ -45,6 +45,7 @@ int paramEspiras;
 int paramComprimento;
 int paramDiametro;
 String parametro;
+String valorFormatado;
 
 // Keypad
 byte pinLinhasTeclado[LINHAS_TECLADO] = {2, 3, 4, 5};
@@ -144,12 +145,15 @@ void loop() {
           telaAtual = telaParametro(parametro, refDiametro);
           break;
         case '*':
-          espiras = 120;
+          espiras = paramEspiras;
           camadas = 4;
           telaAtual = telaProgresso(espiras, camadas);
           delay(2000);
           espiras = 0;
           camadas = 0;
+          refEspiras = "";
+          refComprimento = "";
+          refDiametro = "";
           telaAtual = telaInicial();
           break;
         case '#':
@@ -160,6 +164,13 @@ void loop() {
     case 22:
       switch (tecla) {
         case '*':
+          if (parametro == "Espiras") {
+            paramEspiras = valorFormatado.toInt();
+          } else if (parametro == "Comprimento") {
+            paramComprimento = valorFormatado.toInt();
+          } else {
+            paramDiametro = valorFormatado.toFloat();
+          }
           telaAtual = telaIndutor();
           break;
         case '#':

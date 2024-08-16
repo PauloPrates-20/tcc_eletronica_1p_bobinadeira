@@ -60,7 +60,7 @@ int telaIndutor() {
 
   String titulo = "Ajustar parametros";
   String linha1 = "A)Esp B)Comp C)Diam";
-  String linha2 = "*)Confirmar #)Voltar";
+  String linha2 = "*)Seguir #)Voltar";
 
   display.setCursor(centralizarDisplay(titulo), 0);
   display.print(titulo);
@@ -76,7 +76,7 @@ int telaParametro(String parametro, String valor) {
   display.clear();
 
   String espacador = "";
-  String valorFormatado = valor;
+  valorFormatado = valor;
   if (valor.length() < 1) {
     valorFormatado = "0";
   }
