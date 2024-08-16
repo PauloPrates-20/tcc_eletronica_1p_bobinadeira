@@ -28,9 +28,9 @@ int telaInicial() {
   display.setCursor(centralizarDisplay(titulo), 0);
   display.print(titulo);
   display.setCursor(0, 2);
-  display.print("1 - Bobinar");
+  display.print("1)Bobinar");
   display.setCursor(0, 3);
-  display.print("2 - Recalibrar");
+  display.print("2)Recalibrar");
 
   return 1;
 }
@@ -45,11 +45,11 @@ int telaBobinar() {
   display.setCursor(centralizarDisplay(titulo), 0);
   display.print(titulo);
   display.setCursor(0, 1);
-  display.print("1 - Novo Indutor");
+  display.print("1)Novo Indutor");
   display.setCursor(0, 2);
-  display.print("2 - Repetir Indutor");
+  display.print("2)Repetir Indutor");
   display.setCursor(0, 3);
-  display.print("0 - Voltar");
+  display.print("0)Voltar");
 
   return 20;
 }
@@ -58,16 +58,16 @@ int telaBobinar() {
 int telaIndutor() {
   display.clear();
 
-  String titulo = "Bobinar";
+  String titulo = "Ajustar parametros";
+  String linha1 = "A)Esp B)Comp C)Diam";
+  String linha2 = "*)Confirmar #)Voltar";
 
   display.setCursor(centralizarDisplay(titulo), 0);
   display.print(titulo);
-  display.setCursor(0, 1);
-  display.print("Espiras: ");
-  display.setCursor(0, 2);
-  display.print("Comprimento: ");
-  display.setCursor(0, 3);
-  display.print("Diametro (fio): ");
+  display.setCursor(centralizarDisplay(linha1), 1);
+  display.print(linha1);
+  display.setCursor(centralizarDisplay(linha2), 3);
+  display.print(linha2);
 }
 
 // Tela de monitoramento do processo
