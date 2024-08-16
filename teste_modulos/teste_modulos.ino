@@ -118,5 +118,20 @@ void loop() {
           break;
       }
       break;
+    case 21:
+      switch (tecla) {
+        case 'A':
+          break;
+        case 'B':
+          break;
+        case 'C':
+          break;
+        case '*':
+          break;
+        case '#':
+          telaAtual = telaBobinar();
+          break;
+      }
+      break;
   }
 }
