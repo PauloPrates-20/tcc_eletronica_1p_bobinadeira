@@ -24,6 +24,9 @@
 */
 int telaAtual = 0;
 
+int espiras = 0;
+int camadas = 0;
+
 /* 
   | Instanciamento do display
   | -------------------------------------
@@ -52,10 +55,16 @@ void setup() {
   display.backlight();
 
   telaAtual = telaInicial();
+
+  Serial.begin(9600);
 }
 
 void loop() {
   char tecla = teclado.getKey();
+  if (tecla) {
+    Serial.println(tecla);
+    Serial.println(telaAtual);
+  }
 
   switch (telaAtual) {
     case 1:
@@ -78,17 +87,16 @@ void loop() {
         delay(2000);
         telaAtual = telaInicial();
         break;
-    }
-    break;
+      }
+      break;
     case 20:
       switch (tecla) {
         case '1':
           telaAtual = telaIndutor();
           break;
         case '2':
-          int espiras = 0;
-          int camadas = 0;
           telaAtual = telaProgresso(espiras, camadas);
+
           while (espiras < 120) {
             espiras++;
 
@@ -99,6 +107,7 @@ void loop() {
             atualizarAndamento(espiras, camadas);
             delay(150);
           }
+
           delay(2000);
           telaAtual = telaInicial();
           break;
