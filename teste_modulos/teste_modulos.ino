@@ -24,9 +24,6 @@
 */
 int telaAtual = 0;
 
-int espiras = 0;
-int camadas = 0;
-
 char quadrado = 255;
 
 /* 
@@ -36,6 +33,18 @@ char quadrado = 255;
   | endereço 0x38 para teste no proteus
 */
 LiquidCrystal_I2C display(0x27, COLUNAS_DISPLAY, LINHAS_DISPLAY);
+
+// Variáveis de controle
+int espiras = 0;
+int camadas = 0;
+
+String refEspiras = "";
+String refComprimento = "";
+String refDiametro = "";
+int paramEspiras;
+int paramComprimento;
+int paramDiametro;
+String parametro;
 
 // Keypad
 byte pinLinhasTeclado[LINHAS_TECLADO] = {2, 3, 4, 5};
@@ -53,7 +62,7 @@ Keypad teclado = Keypad(makeKeymap(teclas), pinLinhasTeclado, pinColunasTeclado,
 
 void setup() {
   // Inicialização do display
-  display.begin();
+  display.init();
   display.backlight();
 
   telaAtual = telaInicial();
@@ -123,19 +132,70 @@ void loop() {
     case 21:
       switch (tecla) {
         case 'A':
-          telaAtual = telaParametro("Espiras", "");
+          parametro = "Espiras";
+          telaAtual = telaParametro(parametro, refEspiras);
           break;
         case 'B':
-          telaAtual = telaParametro("Comprimento", "");
+          parametro = "Comprimento";
+          telaAtual = telaParametro(parametro, refComprimento);
           break;
         case 'C':
-          telaAtual = telaParametro("Diametro", "");
+          parametro = "Diametro";
+          telaAtual = telaParametro(parametro, refDiametro);
           break;
         case '*':
-          telaAtual = telaProgresso(120, 4);
+          espiras = 120;
+          camadas = 4;
+          telaAtual = telaProgresso(espiras, camadas);
+          delay(2000);
+          espiras = 0;
+          camadas = 0;
+          telaAtual = telaInicial();
           break;
         case '#':
           telaAtual = telaBobinar();
+          break;
+      }
+      break;
+    case 22:
+      switch (tecla) {
+        case '*':
+          telaAtual = telaIndutor();
+          break;
+        case '#':
+          if (parametro == "Espiras") {
+            refEspiras.remove(refEspiras.length() - 1);
+            telaAtual = telaParametro(parametro, refEspiras);
+          } else if (parametro == "Comprimento") {
+            refComprimento.remove(refComprimento.length() - 1);
+            telaAtual = telaParametro(parametro, refComprimento);
+          } else {
+            refDiametro.remove(refDiametro.length() - 1);
+            telaAtual = telaParametro(parametro, refDiametro);
+          }
+          break;
+        default:
+          if (isDigit(tecla)) {
+            if (parametro == "Espiras") {
+              if (tecla == '0' && refEspiras.length() == 0) {
+                break;
+              }
+              refEspiras += tecla;
+              telaAtual = telaParametro(parametro, refEspiras);
+            } else if (parametro == "Comprimento") {
+              if (tecla == 0 && refComprimento.length() == 0) {
+                break;
+              }
+              refComprimento += tecla;
+              telaAtual = telaParametro(parametro, refComprimento);
+            } else {
+              if (tecla == '0' && refDiametro.length() == 0) {
+                break;
+              }
+              refDiametro += tecla;
+              telaAtual = telaParametro(parametro, refDiametro);
+            }
+          }
           break;
       }
       break;
