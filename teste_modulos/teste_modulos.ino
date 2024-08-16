@@ -86,7 +86,21 @@ void loop() {
           telaAtual = telaIndutor();
           break;
         case '2':
-          telaAtual = telaProgresso(0, 0);
+          int espiras = 0;
+          int camadas = 0;
+          telaAtual = telaProgresso(espiras, camadas);
+          while (espiras < 120) {
+            espiras++;
+
+            if (espiras % 30 == 0) {
+              camadas++;
+            }
+
+            atualizarAndamento(espiras, camadas);
+            delay(150);
+          }
+          delay(2000);
+          telaAtual = telaInicial();
           break;
         case '0':
           telaAtual = telaInicial();
