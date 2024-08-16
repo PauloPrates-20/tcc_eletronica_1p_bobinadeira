@@ -85,6 +85,8 @@ int telaParametro(String parametro, String valor) {
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);
+
+  return 22;
 }
 
 // Tela de monitoramento do processo
@@ -102,7 +104,7 @@ int telaProgresso(int espiras, int camadas) {
   display.setCursor(0, 3);
   display.print(linha2);
 
-  return 22;
+  return 23;
 }
 
 /* Telas de calibragem */
