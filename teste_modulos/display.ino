@@ -68,6 +68,8 @@ int telaIndutor() {
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);
+
+  return 21;
 }
 
 // Tela de monitoramento do processo
@@ -85,7 +87,7 @@ int telaProgresso(int espiras, int camadas) {
   display.setCursor(0, 3);
   display.print(linha2);
 
-  return 21;
+  return 22;
 }
 
 /* Telas de calibragem */
