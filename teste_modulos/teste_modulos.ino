@@ -108,6 +108,8 @@ void loop() {
             delay(150);
           }
 
+          espiras = 0;
+          camadas = 0;
           delay(2000);
           telaAtual = telaInicial();
           break;
