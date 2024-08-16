@@ -27,6 +27,8 @@ int telaAtual = 0;
 int espiras = 0;
 int camadas = 0;
 
+char quadrado = 255;
+
 /* 
   | Instanciamento do display
   | -------------------------------------
@@ -121,12 +123,16 @@ void loop() {
     case 21:
       switch (tecla) {
         case 'A':
+          telaAtual = telaParametro("Espiras", "");
           break;
         case 'B':
+          telaAtual = telaParametro("Comprimento", "");
           break;
         case 'C':
+          telaAtual = telaParametro("Diametro", "");
           break;
         case '*':
+          telaAtual = telaProgresso(120, 4);
           break;
         case '#':
           telaAtual = telaBobinar();

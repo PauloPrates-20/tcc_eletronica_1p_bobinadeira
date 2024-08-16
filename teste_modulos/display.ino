@@ -72,6 +72,21 @@ int telaIndutor() {
   return 21;
 }
 
+int telaParametro(String parametro, String valor) {
+  display.clear();
+
+  String titulo = "Definir " + parametro;
+  String linha1 = parametro + ": " + String(valor) + quadrado;
+  String linha2 = "*)Aceitar #)Apagar";
+
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(centralizarDisplay(linha1), 1);
+  display.print(linha1);
+  display.setCursor(centralizarDisplay(linha2), 3);
+  display.print(linha2);
+}
+
 // Tela de monitoramento do processo
 int telaProgresso(int espiras, int camadas) {
   display.clear();
