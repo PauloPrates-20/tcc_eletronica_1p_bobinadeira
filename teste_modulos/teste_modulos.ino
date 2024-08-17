@@ -94,6 +94,7 @@ void loop() {
     case 20:
       switch (tecla) {
         case '1':
+          indutor = false;
           telaAtual = telaIndutor();
           break;
         case '2':
