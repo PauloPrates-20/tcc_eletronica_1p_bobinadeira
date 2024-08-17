@@ -86,19 +86,7 @@ void loop() {
         telaAtual = telaBobinar();
         break;
       case '2':
-        int tempo = 5;
-        while (tempo > 0) {
-          telaAtual = calibrarRPM(tempo);
-          delay(1000);
-          tempo--;
-        }
-        telaAtual = confirmarRPM(268);
-        delay(2000);
-        telaAtual = calibrarPasso();
-        delay(2000);
-        telaAtual = concluirCalibragem();
-        delay(2000);
-        telaAtual = telaInicial();
+        telaAtual = telaAvisoCalibragem();
         break;
       }
       break;
@@ -227,6 +215,27 @@ void loop() {
             break;
           case '#':
             telaAtual = telaIndutor();
+            break;
+        }
+        break;
+      case 30:
+        switch (tecla) {
+          case '*':
+            int tempo = 5;
+            
+            while (tempo > 0) {
+              telaAtual = calibrarRPM(tempo);
+              delay(1000);
+              tempo--;
+            }
+
+            telaAtual = confirmarRPM(268);
+            delay(2000);
+            telaAtual = calibrarPasso();
+            delay(2000);
+            telaAtual = concluirCalibragem();
+            delay(2000);
+            telaAtual = telaInicial();
             break;
         }
         break;

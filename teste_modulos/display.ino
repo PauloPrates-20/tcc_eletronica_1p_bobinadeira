@@ -159,6 +159,24 @@ int telaProgresso(int espiras, int camadas) {
 }
 
 /* Telas de calibragem */
+// Tela de aviso de segurança de calibragem
+int telaAvisoCalibragem() {
+  display.clear();
+
+  String titulo = "Aviso";
+  String linha1 = "Retire o filamento";
+  String linha2 = "e aperte *";
+
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(centralizarDisplay(linha1), 2);
+  display.print(linha1);
+  display.setCursor(centralizarDisplay(linha2), 3);
+  display.print(linha2);
+
+  return 30;
+}
+
 // Tela de calibragem do RPM
 int calibrarRPM(int tempo) {
   display.clear();
@@ -216,7 +234,7 @@ int concluirCalibragem() {
   display.setCursor(centralizarDisplay(linha2), 2);
   display.print(linha2);
 
-  return 30;
+  return 34;
 }
 
 // Tela de erro
