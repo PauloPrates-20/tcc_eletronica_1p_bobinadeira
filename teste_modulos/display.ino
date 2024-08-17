@@ -16,7 +16,28 @@ void atualizarAndamento(int espiras, int camadas) {
   display.print(espiras);
   display.setCursor(8, 3);
   display.print(camadas);
-} 
+}
+
+// Função para formatar valores
+void formatarValor(String parametro, String valor) {
+  valorFormatado = valor;
+  if (valor.length() < 1) {
+    valorFormatado = "0";
+  }
+
+  if (parametro == "Diametro") {
+    if (valor.length() < 1) {
+      valorFormatado = "0";
+    } else if (valor.length() < 2) {
+      valorFormatado = "0.0" + valor;
+    } else if (valor.length() < 3) {
+      valorFormatado = "0." + valor;
+    } else {
+      int tamanhoOriginal = valor.length();
+      valorFormatado = valor.substring(0, tamanhoOriginal - 2) + "." + valor.substring(tamanhoOriginal - 2);
+    }
+  }
+}
 
 /* Telas */
 // Tela Incial
@@ -76,27 +97,12 @@ int telaParametro(String parametro, String valor) {
   display.clear();
 
   String espacador = "";
-  valorFormatado = valor;
-  if (valor.length() < 1) {
-    valorFormatado = "0";
-  }
-
-  if (parametro == "Diametro") {
-    if (valor.length() < 1) {
-      valorFormatado = "0";
-    } else if (valor.length() < 2) {
-      valorFormatado = "0.0" + valor;
-    } else if (valor.length() < 3) {
-      valorFormatado = "0." + valor;
-    } else {
-      int tamanhoOriginal = valor.length();
-      valorFormatado = valor.substring(0, tamanhoOriginal - 2) + "." + valor.substring(tamanhoOriginal - 2);
-    }
-  }
 
   if (parametro != "Espiras") {
     espacador = "mm";
   }
+
+  formatarValor(parametro, valor);
 
   String titulo = "Definir " + parametro;
   String linha1 = parametro + ": " + String(valorFormatado) + quadrado + espacador;
@@ -111,6 +117,27 @@ int telaParametro(String parametro, String valor) {
   display.print(linha2);
 
   return 22;
+}
+
+// Tela de confirmação dos parâmetros
+int telaConfirmarParametros() {
+  display.clear();
+
+  String linha1 = "Espiras: " + String(paramEspiras);
+  String linha2 = "Comprimento: " + String(paramComprimento) + " mm";
+  String linha3 = "Diametro: " +  String(paramDiametro) + " mm";
+  String linha4 = "*)Confirmar #)Voltar";
+
+  display.setCursor(0, 0);
+  display.print(linha1);
+  display.setCursor(0, 1);
+  display.print(linha2);
+  display.setCursor(0, 2);
+  display.print(linha3);
+  display.setCursor(centralizarDisplay(linha4), 3);
+  display.print(linha4);
+
+  return 23;
 }
 
 // Tela de monitoramento do processo
@@ -128,7 +155,7 @@ int telaProgresso(int espiras, int camadas) {
   display.setCursor(0, 3);
   display.print(linha2);
 
-  return 23;
+  return 24;
 }
 
 /* Telas de calibragem */

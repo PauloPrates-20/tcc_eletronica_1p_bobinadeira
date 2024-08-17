@@ -37,13 +37,14 @@ LiquidCrystal_I2C display(0x27, COLUNAS_DISPLAY, LINHAS_DISPLAY);
 // Variáveis de controle
 int espiras = 0;
 int camadas = 0;
+bool indutor = false;
 
 String refEspiras = "";
 String refComprimento = "";
 String refDiametro = "";
 int paramEspiras;
 int paramComprimento;
-int paramDiametro;
+float paramDiametro;
 String parametro;
 String valorFormatado;
 
@@ -107,23 +108,25 @@ void loop() {
           telaAtual = telaIndutor();
           break;
         case '2':
-          telaAtual = telaProgresso(espiras, camadas);
+          if (indutor) {
+            espiras = 0;
+            camadas = 0;
+            telaAtual = telaProgresso(espiras, camadas);
 
-          while (espiras < 120) {
-            espiras++;
+            while (espiras < paramEspiras) {
+              espiras++;
 
-            if (espiras % 30 == 0) {
-              camadas++;
+              if (espiras % 30 - 1 == 0) {
+                camadas++;
+              }
+
+              atualizarAndamento(espiras, camadas);
+              delay(150);
             }
 
-            atualizarAndamento(espiras, camadas);
-            delay(150);
+            delay(2000);
+            telaAtual = telaInicial();
           }
-
-          espiras = 0;
-          camadas = 0;
-          delay(2000);
-          telaAtual = telaInicial();
           break;
         case '0':
           telaAtual = telaInicial();
@@ -145,16 +148,7 @@ void loop() {
           telaAtual = telaParametro(parametro, refDiametro);
           break;
         case '*':
-          espiras = paramEspiras;
-          camadas = 4;
-          telaAtual = telaProgresso(espiras, camadas);
-          delay(2000);
-          espiras = 0;
-          camadas = 0;
-          refEspiras = "";
-          refComprimento = "";
-          refDiametro = "";
-          telaAtual = telaInicial();
+          if (refEspiras != "" && refComprimento != "" && refDiametro != "") telaAtual = telaConfirmarParametros();
           break;
         case '#':
           telaAtual = telaBobinar();
@@ -208,7 +202,33 @@ void loop() {
             }
           }
           break;
-      }
-      break;
+        }
+        break;
+      case 23:
+        switch (tecla) {
+          case '*':
+            indutor = true;
+            espiras = 0;
+            camadas = 0;
+            telaAtual = telaProgresso(espiras, camadas);
+
+            while (espiras < paramEspiras) {
+              espiras++;
+
+              if (espiras % 30 - 1 == 0) {
+                camadas++;
+              }
+
+              atualizarAndamento(espiras, camadas);
+              delay(150);
+            }
+            delay(2000);
+            telaAtual = telaInicial();
+            break;
+          case '#':
+            telaAtual = telaIndutor();
+            break;
+        }
+        break;
   }
 }
