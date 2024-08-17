@@ -70,7 +70,7 @@ int telaBobinar() {
   display.setCursor(0, 2);
   display.print("2)Repetir Indutor");
   display.setCursor(0, 3);
-  display.print("0)Voltar");
+  display.print("#)Voltar");
 
   return 20;
 }

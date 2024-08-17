@@ -116,7 +116,7 @@ void loop() {
             telaAtual = telaInicial();
           }
           break;
-        case '0':
+        case '#':
           telaAtual = telaInicial();
           break;
       }
