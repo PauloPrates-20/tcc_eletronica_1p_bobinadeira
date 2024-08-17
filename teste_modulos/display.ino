@@ -165,11 +165,11 @@ int telaAvisoCalibragem() {
 
   String titulo = "Aviso";
   String linha1 = "Retire o filamento";
-  String linha2 = "e aperte *";
+  String linha2 = "*)Seguir #)Voltar";
 
   display.setCursor(centralizarDisplay(titulo), 0);
   display.print(titulo);
-  display.setCursor(centralizarDisplay(linha1), 2);
+  display.setCursor(centralizarDisplay(linha1), 1);
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);

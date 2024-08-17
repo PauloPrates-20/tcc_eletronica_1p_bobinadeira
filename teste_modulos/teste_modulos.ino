@@ -35,6 +35,7 @@ char quadrado = 255;
 LiquidCrystal_I2C display(0x27, COLUNAS_DISPLAY, LINHAS_DISPLAY);
 
 // Variáveis de controle
+int tempo;
 int espiras = 0;
 int camadas = 0;
 bool indutor = false;
@@ -170,19 +171,19 @@ void loop() {
         default:
           if (isDigit(tecla)) {
             if (parametro == "Espiras") {
-              if (tecla == '0' && refEspiras.length() == 0) {
+              if ((tecla == '0' && refEspiras.length() == 0) || refEspiras.length() > 4) {
                 break;
               }
               refEspiras += tecla;
               telaAtual = telaParametro(parametro, refEspiras);
             } else if (parametro == "Comprimento") {
-              if (tecla == 0 && refComprimento.length() == 0) {
+              if ((tecla == 0 && refComprimento.length() == 0) || refComprimento.length() > 2) {
                 break;
               }
               refComprimento += tecla;
               telaAtual = telaParametro(parametro, refComprimento);
             } else {
-              if (tecla == '0' && refDiametro.length() == 0) {
+              if ((tecla == '0' && refDiametro.length() == 0) || refDiametro.length() > 4) {
                 break;
               }
               refDiametro += tecla;
@@ -196,6 +197,9 @@ void loop() {
         switch (tecla) {
           case '*':
             indutor = true;
+            refEspiras = "";
+            refComprimento = "";
+            refDiametro = "";
             espiras = 0;
             camadas = 0;
             telaAtual = telaProgresso(espiras, camadas);
@@ -221,8 +225,7 @@ void loop() {
       case 30:
         switch (tecla) {
           case '*':
-            int tempo = 5;
-            
+            tempo = 5;
             while (tempo > 0) {
               telaAtual = calibrarRPM(tempo);
               delay(1000);
@@ -235,6 +238,9 @@ void loop() {
             delay(2000);
             telaAtual = concluirCalibragem();
             delay(2000);
+            telaAtual = telaInicial();
+            break;
+          case '#':
             telaAtual = telaInicial();
             break;
         }
