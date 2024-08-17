@@ -183,7 +183,7 @@ void loop() {
               refComprimento += tecla;
               telaAtual = telaParametro(parametro, refComprimento);
             } else {
-              if ((tecla == '0' && refDiametro.length() == 0) || refDiametro.length() > 4) {
+              if ((tecla == '0' && refDiametro.length() == 0) || refDiametro.length() > 3) {
                 break;
               }
               refDiametro += tecla;
