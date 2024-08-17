@@ -171,7 +171,7 @@ void loop() {
         default:
           if (isDigit(tecla)) {
             if (parametro == "Espiras") {
-              if ((tecla == '0' && refEspiras.length() == 0) || refEspiras.length() > 4) {
+              if ((tecla == '0' && refEspiras.length() == 0) || refEspiras.length() > 3) {
                 break;
               }
               refEspiras += tecla;
