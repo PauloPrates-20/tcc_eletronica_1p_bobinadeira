@@ -35,6 +35,7 @@ void zerarMotorPasso() {
   digitalWrite(DIRECAO_PASSO, TRAS); // Define o sentido em direção ao zero
   digitalWrite(ENABLE, LOW); // Habilita o motor de passo
 
+  telaAtual = calibrarPasso();
   // Atua o motor de passo até o fim de curso
   while (digitalRead(INICIO)) {
     digitalWrite(PWM_PASSO, HIGH);
@@ -44,6 +45,8 @@ void zerarMotorPasso() {
   }
 
   digitalWrite(ENABLE, HIGH); // Desabilita o motor de passo
+  telaAtual = concluirCalibragem();
+  delay(2000);
 }
 
 // Função para rodar o motor
@@ -100,6 +103,7 @@ void bobinar() {
 
   unsigned long tempoAtual = millis(); // Inicia o temporizador
   unsigned long ultimoPulso = micros(); // Temporizador dos pulsos
+  telaAtual = telaProgresso(espirasTotais, camadaAtual);
 
   // Atua o motor pelo número de voltas específicado
   while (espirasTotais < espiras) {
@@ -136,7 +140,7 @@ void bobinar() {
     }
 
     // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
-    if (espiraAtual == espirasCamada) {
+    if (espiraAtual > espirasCamada) {
       direcao = !direcao;
 
       camadaAtual++;
@@ -147,6 +151,8 @@ void bobinar() {
       Serial.print("Camada: ");
       Serial.println(camadaAtual);
     }
+
+    atualizarAndamento(espirasTotais, camadaAtual);
 
     if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
       Serial.println("Processo interrompido: fim de curso acionado.");
@@ -165,4 +171,6 @@ void bobinar() {
   Serial.print("Tempo total: ");
   Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
   Serial.println(" segundos\n");
+  delay(2000);
+  telaAtual = telaInicial();
 }

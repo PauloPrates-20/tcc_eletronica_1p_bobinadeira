@@ -37,13 +37,23 @@ void medirRPMDC() {
 
   // Temporizador para o tempo de execução da função
   unsigned long tempo = millis();
+  unsigned long tempoAtual = millis();
+  int contagem = 5;
 
   // Acionamento do motor
   ligarMotorDc();
 
   // Habilita as interrupções de hardware para ler o encoder durante 5 segundos
+  telaAtual = calibrarRPM(contagem);
   attachInterrupt(digitalPinToInterrupt(PIN_CLK), lerEncoder, CHANGE);
-  while (millis() - tempo < 5000) { }
+  while (millis() - tempo < 5000) {
+
+    if (millis() - tempoAtual >= 1000) {
+      contagem--;
+      tempoAtual = millis();
+      telaAtual = calibrarRPM(contagem);
+    }
+  }
   detachInterrupt(digitalPinToInterrupt(PIN_CLK));
 
   // Desacionamento do motor dc
@@ -54,4 +64,6 @@ void medirRPMDC() {
 
   Serial.print("RPM medido: ");
   Serial.println(rpm);
+  telaAtual = confirmarRPM(rpm);
+  delay(2000);
 }
