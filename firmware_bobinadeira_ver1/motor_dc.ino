@@ -1,7 +1,7 @@
 // Função para ler os pulsos do encoder
 void lerEncoder() {
   // Inicialização do temporizador
-  unsigned long tempoAtual = millis();
+  unsigned long tempoAtual = micros();
 
   // Leitura do estado atual do encoder
   bool estadoClk = digitalRead(PIN_CLK);

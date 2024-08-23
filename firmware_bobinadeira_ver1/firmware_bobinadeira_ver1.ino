@@ -6,7 +6,7 @@
 
 // Motor DC
 #define PIN_MOTOR_DC 6
-#define PIN_CLK 20
+#define PIN_CLK 18
 
 // Motor de passo
 #define PWM_PASSO 5      // Pino PWM do motor de passo
@@ -79,7 +79,7 @@ volatile bool ultimoEstadoClk = LOW;
 
 // Temporizador de debounce (para evitar ruídos na leitura) (em milissegundos)
 unsigned long ultimoDebounce = 0;
-const unsigned long DEBOUNCE = 0;
+const unsigned long DEBOUNCE = 2;
 
 /* Motor de passo */
 // Parâmetros de movimento linear
