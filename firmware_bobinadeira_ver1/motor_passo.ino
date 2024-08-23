@@ -137,8 +137,11 @@ void bobinar() {
           Serial.print("\n");
         }
 
+        // Atualiza o progresso
+        atualizarAndamento(espirasTotais, camadaAtual);
+
         // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
-        if (espiraAtual > espirasCamada) {
+        if (espiraAtual >= espirasCamada) {
           direcao = !direcao;
 
           camadaAtual++;
@@ -150,7 +153,6 @@ void bobinar() {
           Serial.println(camadaAtual);
         }
 
-        atualizarAndamento(espirasTotais, camadaAtual);
 
         if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
           Serial.println("Processo interrompido: fim de curso acionado.");
