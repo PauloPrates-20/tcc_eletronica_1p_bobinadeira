@@ -53,8 +53,8 @@ char quadrado = 255;
 LiquidCrystal_I2C display(0x27, COLUNAS_DISPLAY, LINHAS_DISPLAY);
 
 // Keypad
-byte pinLinhasTeclado[LINHAS_TECLADO] = { 2, 3, 4, 5 };
-byte pinColunasTeclado[COLUNAS_TECLADO] = { 6, 7, 8, 9 };
+byte pinLinhasTeclado[LINHAS_TECLADO] = { 52, 50, 48, 46 };
+byte pinColunasTeclado[COLUNAS_TECLADO] = { 44, 42, 40, 38 };
 
 char teclas[LINHAS_TECLADO][COLUNAS_TECLADO] = {
   '1', '2', '3', 'A',
