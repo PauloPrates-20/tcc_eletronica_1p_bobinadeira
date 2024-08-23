@@ -165,10 +165,10 @@ void loop() {
 
   /* Controle IHM */
   char tecla = teclado.getKey();
-  if (tecla) {
-    Serial.println(tecla);
-    Serial.println(telaAtual);
-  }
+  // if (tecla) {
+  //   Serial.println(tecla);
+  //   Serial.println(telaAtual);
+  // }
 
   switch (telaAtual) {
     case 1:
@@ -296,44 +296,44 @@ void loop() {
       break;
   }
 
-/* Controle Serial */
-// Leitura do comando inicial
-// if (Serial.available() > 0) { // Verifica se existem dados para leitura na Serial
-//   String comando = Serial.readStringUntil('\n'); // Lê o comando
+  /* Controle Serial */
+  // Leitura do comando inicial
+  // if (Serial.available() > 0) { // Verifica se existem dados para leitura na Serial
+  //   String comando = Serial.readStringUntil('\n'); // Lê o comando
 
-//   // Rotina de controle do motor de passo
-//   if (comando == "r") {
-//     salvo = false;
-//     // Lê a quantidade de espiras do indutor
-//     Serial.print("Espiras: ");
-//     esperarInput();
-//     espiras = Serial.readStringUntil('\n').toInt();
-//     Serial.println(espiras);
+  //   // Rotina de controle do motor de passo
+  //   if (comando == "r") {
+  //     salvo = false;
+  //     // Lê a quantidade de espiras do indutor
+  //     Serial.print("Espiras: ");
+  //     esperarInput();
+  //     espiras = Serial.readStringUntil('\n').toInt();
+  //     Serial.println(espiras);
 
-//     // Lê o comprimento do indutor
-//     Serial.print("Comprimento (mm): ");
-//     esperarInput();
-//     comprimento = Serial.readStringUntil('\n').toFloat();
-//     Serial.println(comprimento);
+  //     // Lê o comprimento do indutor
+  //     Serial.print("Comprimento (mm): ");
+  //     esperarInput();
+  //     comprimento = Serial.readStringUntil('\n').toFloat();
+  //     Serial.println(comprimento);
 
-//     // Lê o diâmetro do fio
-//     Serial.print("Bitola (mm): ");
-//     esperarInput();
-//     diametro = Serial.readStringUntil('\n').toFloat();
-//     Serial.println(diametro);
+  //     // Lê o diâmetro do fio
+  //     Serial.print("Bitola (mm): ");
+  //     esperarInput();
+  //     diametro = Serial.readStringUntil('\n').toFloat();
+  //     Serial.println(diametro);
 
-//     Serial.println(""); // Quebra de linha
+  //     Serial.println(""); // Quebra de linha
 
-//     // Inicia a rotina do motor
-//     bobinar();
-//   } else if (comando == "u" && salvo) {
-//     bobinar();
-//   } else if (comando == "c") {
-//     Serial.println("Calibrando...");
-//     calibrar();
-//     Serial.println("Motores calibrados.");
-//   }
-// }
+  //     // Inicia a rotina do motor
+  //     bobinar();
+  //   } else if (comando == "u" && salvo) {
+  //     bobinar();
+  //   } else if (comando == "c") {
+  //     Serial.println("Calibrando...");
+  //     calibrar();
+  //     Serial.println("Motores calibrados.");
+  //   }
+  // }
 }
 
 // Função para calibrar os motores

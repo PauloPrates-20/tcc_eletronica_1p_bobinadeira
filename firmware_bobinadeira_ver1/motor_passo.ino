@@ -55,9 +55,9 @@ void bobinar() {
   // Retorna o motor ao zero máquina antes de iniciar o processo
   if (digitalRead(INICIO)) {
     zerarMotorPasso();
-    delay(1000);
   }
 
+  // Alinha o motor de passo com a ferramenta
   offset();
 
   // Incializa as variáveis de supervisão da rotina
@@ -67,28 +67,32 @@ void bobinar() {
   int espirasTotais = 0;
   int camadaAtual = 1;
 
+  // Serial.println(espiras);
+  // Serial.println(comprimento);
+  // Serial.println(diametro);
+
   int espirasCamada = comprimento / diametro; // Calcula o número de espiras por camada
-  Serial.print("Espiras por camada: ");
-  Serial.println(espirasCamada);
+  // Serial.print("Espiras por camada: ");
+  // Serial.println(espirasCamada);
   
   int camadas = ceil(espiras / espirasCamada) + 1;
-  Serial.print("Camadas: ");
-  Serial.println(camadas);
+  // Serial.print("Camadas: ");
+  // Serial.println(camadas);
 
-  rpmPasso = (rpm * diametro) / PASSO_FUSO; // Calcula o RPM do motor de passo
+  rpmPasso = (rpm * 1.0) * (diametro / (1.0 * PASSO_FUSO)); // Calcula o RPM do motor de passo
   // Serial.print("RPM Passo: ");
   // Serial.println(rpmPasso);
 
   // Calcula a duração dos pulsos com base no rpm
-  const unsigned long DURACAO_PULSOS = ((1.0 / ((rpmPasso / 60.0) * PULSOS_REVOLUCAO)) * 1000000); // Duração dos pulsos em micro segundos
+  const unsigned long DURACAO_PULSOS = (1.0 / ((rpmPasso / 60.0) * (1.0 * PULSOS_REVOLUCAO))) * 1000000.0; // Duração dos pulsos em micro segundos
   // Serial.print("Duração dos pulsos: ");
   // Serial.println(DURACAO_PULSOS);
 
-  int passosEspira = diametro / (1.0 * PASSO_FUSO / PASSOS_REVOLUCAO); // Calcula a quantidade de passos para cada espira do indutor
+  int passosEspira = 1.0 * diametro / ((1.0 * PASSO_FUSO) / (1.0 * PASSOS_REVOLUCAO)); // Calcula a quantidade de passos para cada espira do indutor
   // Serial.print("Passos por espira: ");
   // Serial.println(passosEspira);
 
-  float tempoEstimado = 1.0 * espiras * passosEspira / ((1.0 / (DURACAO_PULSOS / 1000000.0)) / PULSOS_PASSO); // Calcula o tempo estimado do processo
+  float tempoEstimado = espiras * 1.0 / (rpm / 60.0); // Calcula o tempo estimado do processo
 
   // Exibe os parâmetros configurados e os parâmetros estimados (deslocamento e tempo)
   Serial.print("Tempo estimado: ");
@@ -101,22 +105,18 @@ void bobinar() {
   direcao = FRENTE;
   digitalWrite(DIRECAO_PASSO, direcao); // Configura a direção do motor
 
-  unsigned long tempoAtual = millis(); // Inicia o temporizador
-  unsigned long ultimoPulso = micros(); // Temporizador dos pulsos
   telaAtual = telaProgresso(espirasTotais, camadaAtual);
-
+  unsigned long tempoAtual = millis(); // Inicia o temporizador
   // Atua o motor pelo número de voltas específicado
   while (espirasTotais < espiras) {
     ligarMotorDc();
 
     // Pulso PWM do motor de passo
-    if (micros() - ultimoPulso >= DURACAO_PULSOS) {
-      ultimoPulso = micros();
-      digitalWrite(PWM_PASSO, HIGH);
-      delayMicroseconds(1);
-      digitalWrite(PWM_PASSO, LOW);
-      pulsos++; // Incrementa a quantidade de pulsos
-    }
+    digitalWrite(PWM_PASSO, HIGH);
+    delayMicroseconds(DURACAO_PULSOS / 2);
+    digitalWrite(PWM_PASSO, LOW);
+    delayMicroseconds(DURACAO_PULSOS / 2);
+    pulsos++; // Incrementa a quantidade de pulsos
 
     // Verificação de progresso da rotina
     if (pulsos == PULSOS_PASSO) {
@@ -136,27 +136,27 @@ void bobinar() {
         if (espiraAtual % 30 == 0) {
           Serial.print("\n");
         }
+
+        // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
+        if (espiraAtual > espirasCamada) {
+          direcao = !direcao;
+
+          camadaAtual++;
+          espiraAtual = 0;
+
+          digitalWrite(DIRECAO_PASSO, direcao);
+
+          Serial.print("\nCamada: ");
+          Serial.println(camadaAtual);
+        }
+
+        atualizarAndamento(espirasTotais, camadaAtual);
       }
-    }
 
-    // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
-    if (espiraAtual > espirasCamada) {
-      direcao = !direcao;
-
-      camadaAtual++;
-      espiraAtual = 0;
-
-      digitalWrite(DIRECAO_PASSO, direcao);
-
-      Serial.print("Camada: ");
-      Serial.println(camadaAtual);
-    }
-
-    atualizarAndamento(espirasTotais, camadaAtual);
-
-    if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
-      Serial.println("Processo interrompido: fim de curso acionado.");
-      break;
+      if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
+        Serial.println("Processo interrompido: fim de curso acionado.");
+        break;
+      }
     }
   }
 
