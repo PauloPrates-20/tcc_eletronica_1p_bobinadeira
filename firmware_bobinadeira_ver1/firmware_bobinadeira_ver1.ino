@@ -6,6 +6,8 @@
 
 // Motor DC
 #define PIN_MOTOR_DC 6
+
+// Encoder
 #define PIN_CLK 18
 
 // Motor de passo
