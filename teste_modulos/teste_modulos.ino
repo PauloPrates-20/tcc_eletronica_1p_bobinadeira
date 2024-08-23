@@ -22,7 +22,7 @@
   | id 2x = Telas de execução
   | id 3x = Telas de Calibragem
 */
-int telaAtual = 0;
+int telaAtual = 1;
 
 char quadrado = 255;
 

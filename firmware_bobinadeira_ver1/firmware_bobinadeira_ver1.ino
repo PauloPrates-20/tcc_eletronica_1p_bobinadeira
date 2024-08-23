@@ -150,7 +150,7 @@ void setup() {
   display.begin();
   display.backlight();
 
-  calibrar();
+  telaAtual = telaAvisoCalibragem();
 }
 
 void loop() {
@@ -340,6 +340,13 @@ void loop() {
 void calibrar() {
   Serial.println("Calibrando...");
   medirRPMDC();
+
+  while (rpm == 0) {
+    telaAtual = telaErroCalibragem();
+    delay(2000);
+    medirRPMDC();
+  }
+
   zerarMotorPasso();
   Serial.println("Calibrado");
   telaAtual = telaInicial();

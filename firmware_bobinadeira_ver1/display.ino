@@ -163,7 +163,7 @@ int telaProgresso(int espiras, int camadas) {
 int telaAvisoCalibragem() {
   display.clear();
 
-  String titulo = "Aviso";
+  String titulo = "Iniciando calibragem";
   String linha1 = "Retire o filamento";
   String linha2 = "*)Seguir #)Voltar";
 
@@ -235,4 +235,22 @@ int concluirCalibragem() {
   display.print(linha2);
 
   return 34;
+}
+
+// Tela de erro
+int telaErroCalibragem() {
+  display.clear();
+
+  String titulo = "Aviso";
+  String linha1 = "Falha ao medir RPM";
+  String linha2 = "Tentando novamente";
+
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(centralizarDisplay(linha1), 2);
+  display.print(linha1);
+  display.setCursor(centralizarDisplay(linha2), 3);
+  display.print(linha2);
+
+  return -1;
 }
