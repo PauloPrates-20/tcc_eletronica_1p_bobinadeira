@@ -113,9 +113,9 @@ void bobinar() {
 
     // Pulso PWM do motor de passo
     digitalWrite(PWM_PASSO, HIGH);
-    delayMicroseconds(DURACAO_PULSOS / 2);
+    delayMicroseconds(1);
     digitalWrite(PWM_PASSO, LOW);
-    delayMicroseconds(DURACAO_PULSOS / 2);
+    delayMicroseconds(DURACAO_PULSOS);
     pulsos++; // Incrementa a quantidade de pulsos
 
     // Verificação de progresso da rotina
@@ -151,11 +151,11 @@ void bobinar() {
         }
 
         atualizarAndamento(espirasTotais, camadaAtual);
-      }
 
-      if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
-        Serial.println("Processo interrompido: fim de curso acionado.");
-        break;
+        if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
+          Serial.println("Processo interrompido: fim de curso acionado.");
+          break;
+        }
       }
     }
   }
