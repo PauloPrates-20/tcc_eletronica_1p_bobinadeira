@@ -84,13 +84,14 @@ void bobinar() {
   // Serial.println(rpmPasso);
 
   // Calcula a duração dos pulsos com base no rpm
-  const unsigned long DURACAO_PULSOS = (1.0 / ((rpmPasso / 60.0) * (1.0 * PULSOS_REVOLUCAO))) * 1000000.0; // Duração dos pulsos em micro segundos
+
+  const int PASSOS_ESPIRA = 1.0 * diametro / ((1.0 * PASSO_FUSO) / (1.0 * PASSOS_REVOLUCAO)); // Calcula a quantidade de passos para cada espira do indutor
+  // Serial.print("Passos por espira: ");
+  // Serial.println(PASSOS_ESPIRA);
+
+  const unsigned long DURACAO_PULSOS = ((1.0 / ((rpmPasso / 60.0) * (1.0 * PULSOS_REVOLUCAO))) * 1000000.0) - 16000 / (PASSOS_ESPIRA / PULSOS_PASSO); // Duração dos pulsos em micro segundos
   // Serial.print("Duração dos pulsos: ");
   // Serial.println(DURACAO_PULSOS);
-
-  int passosEspira = 1.0 * diametro / ((1.0 * PASSO_FUSO) / (1.0 * PASSOS_REVOLUCAO)); // Calcula a quantidade de passos para cada espira do indutor
-  // Serial.print("Passos por espira: ");
-  // Serial.println(passosEspira);
 
   float tempoEstimado = espiras * 1.0 / (rpm / 60.0); // Calcula o tempo estimado do processo
 
@@ -123,7 +124,7 @@ void bobinar() {
       pulsos = 0; // Reset da contagem de pulsos
       passos++; // Incrementação dos passos
 
-      if (passos == passosEspira) {
+      if (passos == PASSOS_ESPIRA) {
         passos = 0;
         espiraAtual++; // Incrementação de espiras da camada
         espirasTotais++; // Incrementação do total de espiras
