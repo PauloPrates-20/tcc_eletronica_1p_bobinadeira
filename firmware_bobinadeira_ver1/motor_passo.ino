@@ -108,6 +108,7 @@ void bobinar() {
   // Inicia o temporizador
   unsigned long tempoAtual = micros();
   unsigned long ultimoPulso = 0;
+  unsigned long ultimaAtualizacao = 0;
 
   // Atua o motor pelo número de voltas específicado
   ligarMotorDc();
@@ -144,7 +145,11 @@ void bobinar() {
         // }
 
         // Atualiza o progresso
-        atualizarEspira(espirasTotais);
+        if (millis() - ultimaAtualizacao >= 1000) {
+          atualizarAndamento(espirasTotais, camadaAtual);
+
+          ultimaAtualizacao = millis();
+        }
 
         // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
         if (espiraAtual >= espirasCamada) {
@@ -154,7 +159,6 @@ void bobinar() {
           espiraAtual = 0;
 
           digitalWrite(DIRECAO_PASSO, direcao);
-          atualizarCamada(camadaAtual);
 
           // Serial.print("\nCamada: ");
           // Serial.println(camadaAtual);
@@ -178,6 +182,7 @@ void bobinar() {
   Serial.print("Tempo total: ");
   Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
   Serial.println(" segundos\n");
+  atualizarAndamento(espirasTotais, camadaAtual);
   delay(2000);
   telaAtual = telaInicial();
 }

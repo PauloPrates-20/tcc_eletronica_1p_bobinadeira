@@ -11,12 +11,9 @@ int centralizarDisplay(String texto) {
 }
 
 // Função para atualizar o progresso
-void atualizarEspira(int espiras) {
+void atualizarAndamento(int espiras, int camadas) {
   display.setCursor(8, 2);
   display.print(espiras);
-}
-
-void atualizarCamada(int camadas) {
   display.setCursor(8, 3);
   display.print(camadas);
 }
