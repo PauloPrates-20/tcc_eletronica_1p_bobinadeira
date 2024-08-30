@@ -97,8 +97,6 @@ void bobinar() {
   Serial.print(tempoEstimado);
   Serial.println(" segundos");
 
-  Serial.print("\n"); // Quebra de linha
-
   digitalWrite(ENABLE, LOW); // Habilita o motor
   direcao = FRENTE;
   digitalWrite(DIRECAO_PASSO, direcao); // Configura a direção do motor
@@ -146,7 +144,7 @@ void bobinar() {
 
         // Atualiza o progresso
         if (millis() - ultimaAtualizacao >= 1000) {
-          atualizarAndamento(espirasTotais, camadaAtual);
+          atualizarEspira(espirasTotais);
 
           ultimaAtualizacao = millis();
         }
@@ -154,11 +152,11 @@ void bobinar() {
         // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
         if (espiraAtual >= espirasCamada) {
           direcao = !direcao;
-
           camadaAtual++;
           espiraAtual = 0;
 
           digitalWrite(DIRECAO_PASSO, direcao);
+          atualizarCamada(camadaAtual);
 
           // Serial.print("\nCamada: ");
           // Serial.println(camadaAtual);
@@ -177,12 +175,12 @@ void bobinar() {
   digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
 
   // Feedback para o usuário
-  Serial.println("\n"); // Quebra de linha
   Serial.println("Pronto!");
   Serial.print("Tempo total: ");
   Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
   Serial.println(" segundos\n");
-  atualizarAndamento(espirasTotais, camadaAtual);
+  atualizarEspira(espirasTotais);
+  atualizarCamada(camadaAtual);
   delay(2000);
   telaAtual = telaInicial();
 }
