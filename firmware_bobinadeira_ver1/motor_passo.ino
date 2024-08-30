@@ -86,8 +86,8 @@ void bobinar() {
 
   // Calcula a duração dos pulsos com base no rpm
   const unsigned long DURACAO_PULSOS = (1.0 / ((1.0 * rpm / 60.0) * (1.0 * PASSOS_ESPIRA * PULSOS_PASSO))) * 1000000; // Duração dos pulsos em micro segundos
-  Serial.print("Duração dos pulsos: ");
-  Serial.println(DURACAO_PULSOS);
+  // Serial.print("Duração dos pulsos: ");
+  // Serial.println(DURACAO_PULSOS);
 
   // Calcula o tempo estimado do processo
   float tempoEstimado = espiras * 1.0 / (rpm / 60.0);
