@@ -79,21 +79,18 @@ void bobinar() {
   // Serial.print("Camadas: ");
   // Serial.println(camadas);
 
-  rpmPasso = (rpm * 1.0) * (diametro / (1.0 * PASSO_FUSO)); // Calcula o RPM do motor de passo
-  // Serial.print("RPM Passo: ");
-  // Serial.println(rpmPasso);
-
-  // Calcula a duração dos pulsos com base no rpm
-
-  const int PASSOS_ESPIRA = 1.0 * diametro / ((1.0 * PASSO_FUSO) / (1.0 * PASSOS_REVOLUCAO)); // Calcula a quantidade de passos para cada espira do indutor
+  // Calcula a quantidade de passos para cada espira do indutor
+  const int PASSOS_ESPIRA = 1.0 * diametro / ((1.0 * PASSO_FUSO) / (1.0 * PASSOS_REVOLUCAO)); 
   // Serial.print("Passos por espira: ");
   // Serial.println(PASSOS_ESPIRA);
 
-  const unsigned long DURACAO_PULSOS = ((1.0 / ((rpmPasso / 60.0) * (1.0 * PULSOS_REVOLUCAO))) * 1000000.0); // Duração dos pulsos em micro segundos
-  // Serial.print("Duração dos pulsos: ");
-  // Serial.println(DURACAO_PULSOS);
+  // Calcula a duração dos pulsos com base no rpm
+  const unsigned long DURACAO_PULSOS = (1.0 / ((1.0 * rpm / 60.0) * (1.0 * PASSOS_ESPIRA * PULSOS_PASSO))) * 1000000; // Duração dos pulsos em micro segundos
+  Serial.print("Duração dos pulsos: ");
+  Serial.println(DURACAO_PULSOS);
 
-  float tempoEstimado = espiras * 1.0 / (rpm / 60.0); // Calcula o tempo estimado do processo
+  // Calcula o tempo estimado do processo
+  float tempoEstimado = espiras * 1.0 / (rpm / 60.0);
 
   // Exibe os parâmetros configurados e os parâmetros estimados (deslocamento e tempo)
   Serial.print("Tempo estimado: ");
@@ -107,17 +104,25 @@ void bobinar() {
   digitalWrite(DIRECAO_PASSO, direcao); // Configura a direção do motor
 
   telaAtual = telaProgresso(espirasTotais, camadaAtual);
-  unsigned long tempoAtual = millis(); // Inicia o temporizador
-  // Atua o motor pelo número de voltas específicado
-  while (espirasTotais < espiras) {
-    ligarMotorDc();
 
+  // Inicia o temporizador
+  unsigned long tempoAtual = micros();
+  unsigned long ultimoPulso = 0;
+
+  // Atua o motor pelo número de voltas específicado
+  ligarMotorDc();
+  while (espirasTotais < espiras) {
     // Pulso PWM do motor de passo
-    digitalWrite(PWM_PASSO, HIGH);
-    delayMicroseconds(1);
-    digitalWrite(PWM_PASSO, LOW);
-    delayMicroseconds(DURACAO_PULSOS);
-    pulsos++; // Incrementa a quantidade de pulsos
+    if (micros() - ultimoPulso >= DURACAO_PULSOS) {
+      ultimoPulso = micros();
+
+      digitalWrite(PWM_PASSO, HIGH);
+      delayMicroseconds(1);
+      digitalWrite(PWM_PASSO, LOW);
+
+      // Incrementa a quantidade de pulsos
+      pulsos++; 
+    }
 
     // Verificação de progresso da rotina
     if (pulsos == PULSOS_PASSO) {
@@ -130,13 +135,13 @@ void bobinar() {
         espirasTotais++; // Incrementação do total de espiras
 
         // Exibição das voltas
-        Serial.print(espirasTotais);
-        Serial.print(" ");
+        // Serial.print(espirasTotais);
+        // Serial.print(" ");
 
         // Quebra a linha a cada 30 espiras
-        if (espiraAtual % 30 == 0) {
-          Serial.print("\n");
-        }
+        // if (espiraAtual % 30 == 0) {
+        //   Serial.print("\n");
+        // }
 
         // Atualiza o progresso
         atualizarAndamento(espirasTotais, camadaAtual);
@@ -150,20 +155,18 @@ void bobinar() {
 
           digitalWrite(DIRECAO_PASSO, direcao);
 
-          Serial.print("\nCamada: ");
-          Serial.println(camadaAtual);
+          // Serial.print("\nCamada: ");
+          // Serial.println(camadaAtual);
         }
 
-
-        if ((!digitalRead(FIM) && direcao == FRENTE) || (!digitalRead(INICIO) && direcao == TRAS)) {
-          Serial.println("Processo interrompido: fim de curso acionado.");
+        if (!digitalRead(FIM) || !digitalRead(INICIO)) {
+          // Serial.println("Processo interrompido: fim de curso acionado.");
           break;
         }
       }
     }
   }
-
-  float tempoTotal = (millis() - tempoAtual) / 1000.0;
+  float tempoTotal = (micros() - tempoAtual) / 1000000.0;
 
   desligarMotorDc();
   digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
