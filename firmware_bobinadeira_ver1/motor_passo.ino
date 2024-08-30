@@ -144,7 +144,7 @@ void bobinar() {
         // }
 
         // Atualiza o progresso
-        atualizarAndamento(espirasTotais, camadaAtual);
+        atualizarEspira(espirasTotais);
 
         // Verifica se o motor chegou ao fim do eixo linear ou ao fim da camada
         if (espiraAtual >= espirasCamada) {
@@ -154,6 +154,7 @@ void bobinar() {
           espiraAtual = 0;
 
           digitalWrite(DIRECAO_PASSO, direcao);
+          atualizarCamada(camadaAtual);
 
           // Serial.print("\nCamada: ");
           // Serial.println(camadaAtual);
