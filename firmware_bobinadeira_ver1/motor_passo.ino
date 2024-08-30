@@ -89,7 +89,7 @@ void bobinar() {
   // Serial.print("Passos por espira: ");
   // Serial.println(PASSOS_ESPIRA);
 
-  const unsigned long DURACAO_PULSOS = ((1.0 / ((rpmPasso / 60.0) * (1.0 * PULSOS_REVOLUCAO))) * 1000000.0) - 16000 / (PASSOS_ESPIRA / PULSOS_PASSO); // Duração dos pulsos em micro segundos
+  const unsigned long DURACAO_PULSOS = ((1.0 / ((rpmPasso / 60.0) * (1.0 * PULSOS_REVOLUCAO))) * 1000000.0); // Duração dos pulsos em micro segundos
   // Serial.print("Duração dos pulsos: ");
   // Serial.println(DURACAO_PULSOS);
 
