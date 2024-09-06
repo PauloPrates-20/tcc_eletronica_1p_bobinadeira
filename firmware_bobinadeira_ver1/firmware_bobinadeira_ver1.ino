@@ -81,7 +81,7 @@ volatile bool ultimoEstadoClk = LOW;
 
 // Temporizador de debounce (para evitar ruídos na leitura) (em milissegundos)
 unsigned long ultimoDebounce = 0;
-const unsigned long DEBOUNCE = 5;
+const unsigned long DEBOUNCE = 0;
 
 /* Motor de passo */
 // Parâmetros de movimento linear
