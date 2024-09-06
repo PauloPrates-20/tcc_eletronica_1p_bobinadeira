@@ -4,7 +4,7 @@ void offset() {
 
   int pulsos = 0;
   int passos = 0;
-  float deslocamento = 15.00;
+  float deslocamento = 20.00;
   int passosTotais = deslocamento / (1.0 * PASSO_FUSO / PASSOS_REVOLUCAO);
 
   digitalWrite(DIRECAO_PASSO, FRENTE);
