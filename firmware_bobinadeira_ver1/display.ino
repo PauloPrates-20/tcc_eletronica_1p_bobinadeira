@@ -51,10 +51,12 @@ int telaInicial() {
 
   display.setCursor(centralizarDisplay(titulo), 0);
   display.print(titulo);
-  display.setCursor(0, 2);
+  display.setCursor(0, 1);
   display.print("1)Bobinar");
-  display.setCursor(0, 3);
+  display.setCursor(0, 2);
   display.print("2)Recalibrar");
+  display.setCursor(0, 3);
+  display.print("0)Offset");
 
   seguro();
 

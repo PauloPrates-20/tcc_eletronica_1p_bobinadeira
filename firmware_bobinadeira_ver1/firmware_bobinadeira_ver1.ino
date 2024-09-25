@@ -317,8 +317,10 @@ void loop() {
     case 25:
       switch (tecla) {
         case '*':
-          offsetPasso = valorFormatado.toInt();
-          telaAtual = telaInicial();
+          if (refOffset != "") {
+            offsetPasso = valorFormatado.toInt();
+            telaAtual = telaInicial();
+          }
           break;
         case '#':
           refOffset.remove(refDiametro.length() - 1);
