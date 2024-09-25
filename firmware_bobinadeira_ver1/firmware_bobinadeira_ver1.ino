@@ -32,6 +32,11 @@
 #define LINHAS_TECLADO 4
 #define COLUNAS_TECLADO 4
 
+// Módulo relé
+#define VERDE A0
+#define AMARELO A1
+#define VERMELHO A2
+
 /* Variáveis */
 
 // Display
@@ -98,12 +103,14 @@ bool direcao = FRENTE;  // Direção inicial do motor de passo
 String refEspiras = "";      // Espiras do indutor na IHM
 String refComprimento = "";  // Comprimento do indutor na IHM
 String refDiametro = "";     // Diametro do filamento na IHM
+String refOffset = "";       // Offset do motor de passo na IHM
 String parametro;            // Parametro a exibir no display
 String valorFormatado;       // Valor do parametro formatado para exibição
 
 int espiras;         // Quantidade de espiras do indutor
 int comprimento;     // Comprimento interno do indutor em mm
 float diametro;      // Bitola do fio em mm
+int offsetPasso = 20;     // Offset do motor de passo em mm
 bool salvo = false;  // Estado do indutor
 
 /* Protótipos de funções */
@@ -145,6 +152,15 @@ void setup() {
   digitalWrite(ENABLE, HIGH);            // Desabilita o motor
   digitalWrite(DIRECAO_PASSO, direcao);  // Define a direção inicial do motor
 
+  /* Módulo Relé */
+  // Configuração inicial
+  pinMode(VERDE, OUTPUT);
+  pinMode(AMARELO, OUTPUT);
+  pinMode(VERMELHO, OUTPUT);
+  digitalWrite(VERDE, HIGH);
+  digitalWrite(AMARELO, HIGH);
+  digitalWrite(VERMELHO, HIGH);
+
   /* Interface */
   // Inicialização da interface
   display.begin();
@@ -179,6 +195,9 @@ void loop() {
         case '2':
           telaAtual = telaAvisoCalibragem();
           break;
+        case '0':
+          parametro = "Offset";
+          telaAtual = telaOffset(parametro, refOffset);
       }
       break;
     case 20:
@@ -227,8 +246,10 @@ void loop() {
             espiras = valorFormatado.toInt();
           } else if (parametro == "Comprimento") {
             comprimento = valorFormatado.toInt();
-          } else {
+          } else if (parametro == "Diametro") {
             diametro = valorFormatado.toFloat();
+          } else {
+            offsetPasso = valorFormatado.toInt();
           }
           telaAtual = telaIndutor();
           break;
@@ -239,9 +260,12 @@ void loop() {
           } else if (parametro == "Comprimento") {
             refComprimento.remove(refComprimento.length() - 1);
             telaAtual = telaParametro(parametro, refComprimento);
-          } else {
+          } else if (parametro == "Diametro") {
             refDiametro.remove(refDiametro.length() - 1);
             telaAtual = telaParametro(parametro, refDiametro);
+          } else {
+            refOffset.remove(refDiametro.length() - 1);
+            telaAtual = telaParametro(parametro, refOffset);
           }
           break;
         default:
@@ -258,12 +282,18 @@ void loop() {
               }
               refComprimento += tecla;
               telaAtual = telaParametro(parametro, refComprimento);
-            } else {
+            } else if (parametro == "Diametro") {
               if ((tecla == '0' && refDiametro.length() == 0) || refDiametro.length() > 3) {
                 break;
               }
               refDiametro += tecla;
               telaAtual = telaParametro(parametro, refDiametro);
+            } else {
+              if ((tecla == '0' && refOffset.length() == 0) || refDiametro.length() > 1) {
+                break;
+              }
+              refOffset += tecla;
+              telaAtual = telaParametro(parametro, refOffset);
             }
           }
           break;
@@ -281,6 +311,27 @@ void loop() {
           break;
         case '#':
           telaAtual = telaIndutor();
+          break;
+      }
+      break;
+    case 25:
+      switch (tecla) {
+        case '*':
+          offsetPasso = valorFormatado.toInt();
+          telaAtual = telaInicial();
+          break;
+        case '#':
+          refOffset.remove(refDiametro.length() - 1);
+          telaAtual = telaOffset(parametro, refOffset);
+          break;
+        default:
+          if (isDigit(tecla)) {
+            if ((tecla == '0' && refOffset.length() == 0) || refDiametro.length() > 1) {
+              break;
+            }
+            refOffset += tecla;
+            telaAtual = telaOffset(parametro, refOffset);
+          }
           break;
       }
       break;

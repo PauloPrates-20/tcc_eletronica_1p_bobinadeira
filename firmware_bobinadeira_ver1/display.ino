@@ -56,6 +56,8 @@ int telaInicial() {
   display.setCursor(0, 3);
   display.print("2)Recalibrar");
 
+  seguro();
+
   return 1;
 }
 
@@ -75,6 +77,8 @@ int telaBobinar() {
   display.setCursor(0, 3);
   display.print("#)Voltar");
 
+  seguro();
+
   return 20;
 }
 
@@ -92,6 +96,8 @@ int telaIndutor() {
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);
+
+  seguro();
 
   return 21;
 }
@@ -119,6 +125,8 @@ int telaParametro(String parametro, String valor) {
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);
 
+  seguro();
+
   return 22;
 }
 
@@ -140,6 +148,8 @@ int telaConfirmarParametros() {
   display.setCursor(centralizarDisplay(linha4), 3);
   display.print(linha4);
 
+  cuidado();
+
   return 23;
 }
 
@@ -158,7 +168,38 @@ int telaProgresso(int espiras, int camadas) {
   display.setCursor(0, 3);
   display.print(linha2);
 
+  perigo();
+
   return 24;
+}
+
+// Tela de ajuste do offset
+int telaOffset(String parametro, String valor) {
+  display.clear();
+
+  String espacador = "";
+
+  if (parametro != "Espiras") {
+    espacador = "mm";
+  }
+
+  formatarValor(parametro, valor);
+
+  String titulo = "Definir " + parametro;
+  String linha1 = parametro + ": " + String(valorFormatado) + quadrado + espacador;
+  String linha2 = "*)Aceitar #)Apagar";
+
+
+  display.setCursor(centralizarDisplay(titulo), 0);
+  display.print(titulo);
+  display.setCursor(0, 1);
+  display.print(linha1);
+  display.setCursor(centralizarDisplay(linha2), 3);
+  display.print(linha2);
+
+  seguro();
+
+  return 25;
 }
 
 /* Telas de calibragem */
@@ -177,6 +218,8 @@ int telaAvisoCalibragem() {
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);
 
+  cuidado();
+
   return 30;
 }
 
@@ -191,6 +234,8 @@ int calibrarRPM(int tempo) {
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 2);
   display.print(linha2);
+
+  perigo();
 
   return 31;
 }
@@ -222,6 +267,8 @@ int calibrarPasso() {
   display.setCursor(centralizarDisplay(linha2), 2);
   display.print(linha2);
 
+  perigo();
+
   return 33;
 }
 
@@ -237,7 +284,9 @@ int concluirCalibragem() {
   display.setCursor(centralizarDisplay(linha2), 2);
   display.print(linha2);
 
-  return 34;
+  cuidado();
+
+  return 35;
 }
 
 // Tela de erro
@@ -254,6 +303,8 @@ int telaErroCalibragem() {
   display.print(linha1);
   display.setCursor(centralizarDisplay(linha2), 3);
   display.print(linha2);
+
+  perigo();
 
   return -1;
 }
