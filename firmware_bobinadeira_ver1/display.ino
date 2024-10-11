@@ -310,3 +310,20 @@ int telaErroCalibragem() {
 
   return -1;
 }
+
+// Tela de erro porta aberta
+int telaErroPorta() {
+  display.clear();
+
+  String titulo = "Aviso";
+  String linha1 = "Porta aberta";
+
+  display.setCursor(centralizarDisplay(titulo), 1);
+  display.print(titulo);
+  display.setCursor(centralizarDisplay(linha1), 2);
+  display.print(linha1);
+
+  perigo();
+
+  return -2;
+}

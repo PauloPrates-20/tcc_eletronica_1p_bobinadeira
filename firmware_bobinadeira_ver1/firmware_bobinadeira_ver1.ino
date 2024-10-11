@@ -20,7 +20,7 @@
 #define TRAS true
 
 // Fins de curso
-#define FIM 12     // Pino do fim de curso 1
+#define PORTA 12     // Pino do sensor de porta
 #define INICIO 13  // Pino do fim de curso 2
 
 // Display
@@ -77,7 +77,7 @@ Keypad teclado = Keypad(makeKeymap(teclas), pinLinhasTeclado, pinColunasTeclado,
 // RPM inicial do motor DC
 int rpm = 350;
 
-/* Encoder */
+// Encoder
 // Contagem de pulsos
 volatile int pulsosEncoder = 0;
 
@@ -88,7 +88,7 @@ volatile bool ultimoEstadoClk = LOW;
 unsigned long ultimoDebounce = 0;
 const unsigned long DEBOUNCE = 0;
 
-/* Motor de passo */
+// Motor de passo
 // Parâmetros de movimento linear
 const int PASSOS_REVOLUCAO = 200;                              // Quantidade de passos por volta do motor de passo
 const int PULSOS_REVOLUCAO = 1600;                             // Quantidade de pulsos por volta do motor de passo
@@ -98,6 +98,9 @@ const int PASSO_FUSO = 8;                                      // Passo do fuso 
 // Variáveis de controle do motor de passo
 int rpmPasso;           // RPM inicial do motor de passo
 bool direcao = FRENTE;  // Direção inicial do motor de passo
+
+// Estado da calibragem
+bool calibrado = false;
 
 // Parâmetros do indutor
 String refEspiras = "";      // Espiras do indutor na IHM
@@ -113,14 +116,6 @@ float diametro;      // Bitola do fio em mm
 int offsetPasso = 20;     // Offset do motor de passo em mm
 bool salvo = false;  // Estado do indutor
 
-/* Protótipos de funções */
-
-// Display
-// Funções auxiliares
-int centralizarDisplay(String texto);
-void atualizarAndamento(int espiras, int camadas);
-void formatarValor(String parametro, String valor);
-
 void setup() {
   /* Serial */
   // Inicialização da comunicação Serial
@@ -135,11 +130,11 @@ void setup() {
 
   /* Fins de curso */
   // Definição dos pinos dos fins de curso como entrada
-  pinMode(FIM, INPUT_PULLUP);
+  pinMode(PORTA, INPUT_PULLUP);
   pinMode(INICIO, INPUT_PULLUP);
 
   // Acionamento do pull-up interno para os fins de curso
-  digitalWrite(FIM, HIGH);
+  digitalWrite(PORTA, HIGH);
   digitalWrite(INICIO, HIGH);
 
   /* Motor de Passo */
@@ -171,13 +166,28 @@ void setup() {
 
 void loop() {
   /* Teste dos fins de curso */
-  // if (!digitalRead(FIM) || !digitalRead(INICIO)) {
-  //   Serial.print("Fim: ");
-  //   Serial.println(digitalRead(FIM));
+  // if (!digitalRead(PORTA) || !digitalRead(INICIO)) {
+  //   Serial.print("PORTA: ");
+  //   Serial.println(digitalRead(PORTA));
   //   Serial.print("Início: ");
   //   Serial.println(digitalRead(INICIO));
   //   delay(300);
   // }
+
+  // Interrupção de porta aberta
+  while (digitalRead(PORTA)) {
+    if (telaAtual != -2) {
+      telaAtual = telaErroPorta();
+    }
+  }
+
+  if (telaAtual == -2) {
+    if (calibrado) {
+      telaAtual = telaInicial();
+    } else {
+      telaAtual = telaAvisoCalibragem();
+    }
+  }
 
   /* Controle IHM */
   char tecla = teclado.getKey();

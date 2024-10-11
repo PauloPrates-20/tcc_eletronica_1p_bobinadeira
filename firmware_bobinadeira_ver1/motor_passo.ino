@@ -161,8 +161,15 @@ void bobinar() {
           // Serial.println(camadaAtual);
         }
 
-        if (!digitalRead(FIM) || !digitalRead(INICIO)) {
+        // Interrompe o processo ao bater no fim de curso
+        if (!digitalRead(INICIO)) {
           // Serial.println("Processo interrompido: fim de curso acionado.");
+          break;
+        }
+
+        // Interrompe o processo caso a porta seja aberta
+        if (digitalRead(PORTA))
+        {
           break;
         }
       }
