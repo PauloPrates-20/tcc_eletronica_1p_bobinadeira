@@ -40,14 +40,23 @@
 /* Variáveis */
 
 // Display
-/* 
-  | Controle de telas
-  | -----------------------------
-  | id -1 = erro de comando
-  | id 1 = Tela de Seleção
-  | id 2x = Telas de execução
-  | id 3x = Telas de Calibragem
-*/
+// Controle de telas
+enum telas {
+  ERRO_PORTA = -2,
+  ERRO_CALIBRAGEM,
+  INICIO = 1,
+  BOBINAR = 20,
+  INDUTOR,
+  PARAMETROS,
+  CONFIRMAR_PARAMETROS,
+  PROGRESSO,
+  OFFSET,
+  AVISO_CALIBRAGEM = 30,
+  CALIBRAGEM_RPM,
+  CONFIRMAR_RPM,
+  CALIBRAGEM_PASSO,
+  CONCLUIR_CALIBRAGEM
+}
 int telaAtual = 1;
 char quadrado = 255;
 
@@ -176,12 +185,12 @@ void loop() {
 
   // Interrupção de porta aberta
   while (digitalRead(PORTA)) {
-    if (telaAtual != -2) {
+    if (telaAtual != ERRO_PORTA) {
       telaAtual = telaErroPorta();
     }
   }
 
-  if (telaAtual == -2) {
+  if (telaAtual == ERRO_PORTA) {
     if (calibrado) {
       telaAtual = telaInicial();
     } else {
@@ -197,7 +206,7 @@ void loop() {
   // }
 
   switch (telaAtual) {
-    case 1:
+    case INICIO:
       switch (tecla) {
         case '1':
           telaAtual = telaBobinar();
@@ -210,7 +219,7 @@ void loop() {
           telaAtual = telaOffset(parametro, refOffset);
       }
       break;
-    case 20:
+    case BOBINAR:
       switch (tecla) {
         case '1':
           salvo = false;
@@ -227,7 +236,7 @@ void loop() {
           break;
       }
       break;
-    case 21:
+    case INDUTOR:
       switch (tecla) {
         case 'A':
           parametro = "Espiras";
@@ -249,7 +258,7 @@ void loop() {
           break;
       }
       break;
-    case 22:
+    case PARAMETROS:
       switch (tecla) {
         case '*':
           if (parametro == "Espiras") {
@@ -309,7 +318,7 @@ void loop() {
           break;
       }
       break;
-    case 23:
+    case CONFIRMAR_PARAMETROS:
       switch (tecla) {
         case '*':
           salvo = true;
@@ -324,7 +333,7 @@ void loop() {
           break;
       }
       break;
-    case 25:
+    case OFFSET:
       switch (tecla) {
         case '*':
           if (refOffset != "") {
@@ -347,7 +356,7 @@ void loop() {
           break;
       }
       break;
-    case 30:
+    case AVISO_CALIBRAGEM:
       switch (tecla) {
         case '*':
           calibrar();

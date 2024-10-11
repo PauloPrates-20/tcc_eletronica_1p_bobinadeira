@@ -60,7 +60,7 @@ int telaInicial() {
 
   seguro();
 
-  return 1;
+  return INICIO;
 }
 
 /* Telas de execução */
@@ -81,7 +81,7 @@ int telaBobinar() {
 
   seguro();
 
-  return 20;
+  return BOBINAR;
 }
 
 // Tela de dimensionamento do indutor
@@ -101,7 +101,7 @@ int telaIndutor() {
 
   seguro();
 
-  return 21;
+  return INDUTOR;
 }
 
 int telaParametro(String parametro, String valor) {
@@ -129,7 +129,7 @@ int telaParametro(String parametro, String valor) {
 
   seguro();
 
-  return 22;
+  return PARAMETROS;
 }
 
 // Tela de confirmação dos parâmetros
@@ -152,7 +152,7 @@ int telaConfirmarParametros() {
 
   cuidado();
 
-  return 23;
+  return CONFIRMAR_PARAMETROS;
 }
 
 // Tela de monitoramento do processo
@@ -172,7 +172,7 @@ int telaProgresso(int espiras, int camadas) {
 
   perigo();
 
-  return 24;
+  return PROGRESSO;
 }
 
 // Tela de ajuste do offset
@@ -201,7 +201,7 @@ int telaOffset(String parametro, String valor) {
 
   seguro();
 
-  return 25;
+  return OFFSET;
 }
 
 /* Telas de calibragem */
@@ -222,7 +222,7 @@ int telaAvisoCalibragem() {
 
   cuidado();
 
-  return 30;
+  return AVISO_CALIBRAGEM;
 }
 
 // Tela de calibragem do RPM
@@ -239,7 +239,7 @@ int calibrarRPM(int tempo) {
 
   perigo();
 
-  return 31;
+  return CALIBRAGEM_RPM;
 }
 
 // Tela de exibição do RPM
@@ -254,7 +254,7 @@ int confirmarRPM(int rpm) {
   display.setCursor(centralizarDisplay(linha2), 2);
   display.print(linha2);
   
-  return 32;
+  return CONFIRMAR_RPM;
 }
 
 // Tela de calibragem do motor de passo
@@ -271,7 +271,7 @@ int calibrarPasso() {
 
   perigo();
 
-  return 33;
+  return CALIBRAGEM_PASSO;
 }
 
 // Tela de conclusão da calibragem
@@ -288,7 +288,7 @@ int concluirCalibragem() {
 
   cuidado();
 
-  return 35;
+  return CONCLUIR_CALIBRAGEM;
 }
 
 // Tela de erro
@@ -308,7 +308,7 @@ int telaErroCalibragem() {
 
   perigo();
 
-  return -1;
+  return ERRO_CALIBRAGEM;
 }
 
 // Tela de erro porta aberta
@@ -325,5 +325,5 @@ int telaErroPorta() {
 
   perigo();
 
-  return -2;
+  return ERRO_PORTA;
 }
