@@ -1,9 +1,8 @@
-/* Bibliotecas */
+// Bibliotecas
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
 
-/* Definição de hardware */
-
+// Definições de hardware
 // Motor DC
 #define PIN_MOTOR_DC 6
 
