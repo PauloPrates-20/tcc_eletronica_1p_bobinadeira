@@ -413,6 +413,7 @@ void calibrar() {
   zerarMotorPasso();
   Serial.println("Calibrado");
   telaAtual = telaInicial();
+  calibrado = true;
 }
 
 // Função para esperar entrada do usuário
