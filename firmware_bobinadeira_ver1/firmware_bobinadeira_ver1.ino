@@ -43,7 +43,7 @@
 enum telas {
   ERRO_PORTA = -2,
   ERRO_CALIBRAGEM,
-  INICIO = 1,
+  INICIAL = 1,
   BOBINAR = 20,
   INDUTOR,
   PARAMETROS,
@@ -55,7 +55,8 @@ enum telas {
   CONFIRMAR_RPM,
   CALIBRAGEM_PASSO,
   CONCLUIR_CALIBRAGEM
-}
+};
+
 int telaAtual = 1;
 char quadrado = 255;
 
@@ -205,7 +206,7 @@ void loop() {
   // }
 
   switch (telaAtual) {
-    case INICIO:
+    case INICIAL:
       switch (tecla) {
         case '1':
           telaAtual = telaBobinar();

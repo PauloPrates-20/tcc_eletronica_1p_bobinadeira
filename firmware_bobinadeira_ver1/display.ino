@@ -60,7 +60,7 @@ int telaInicial() {
 
   seguro();
 
-  return INICIO;
+  return INICIAL;
 }
 
 /* Telas de execução */
