@@ -73,7 +73,7 @@ void setup() {
 
   // Interface
   // Inicialização da interface
-  display.begin();
+  display.init();
   display.backlight();
 
   telaAtual = telaAvisoCalibragem();
