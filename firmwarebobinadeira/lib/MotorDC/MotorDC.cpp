@@ -1,3 +1,5 @@
+#include <MotorDC.h>
+
 // Função para ler os pulsos do encoder
 void lerEncoder() {
   // Inicialização do temporizador
@@ -44,14 +46,14 @@ void medirRPMDC() {
   ligarMotorDc();
 
   // Habilita as interrupções de hardware para ler o encoder durante 5 segundos
-  telaAtual = calibrarRPM(contagem);
+  telaAtual = telaCalibrarRPM(contagem);
   attachInterrupt(digitalPinToInterrupt(PIN_CLK), lerEncoder, CHANGE);
   while (millis() - tempo < 5000) {
 
     if (millis() - tempoAtual >= 1000) {
       contagem--;
       tempoAtual = millis();
-      telaAtual = calibrarRPM(contagem);
+      telaAtual = telaCalibrarRPM(contagem);
     }
   }
   detachInterrupt(digitalPinToInterrupt(PIN_CLK));
@@ -64,6 +66,6 @@ void medirRPMDC() {
 
   Serial.print("RPM medido: ");
   Serial.println(rpm);
-  telaAtual = confirmarRPM(rpm);
+  telaAtual = telaConfirmarRPM(rpm);
   delay(2000);
 }

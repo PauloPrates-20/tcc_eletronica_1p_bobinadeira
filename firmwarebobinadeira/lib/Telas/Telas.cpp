@@ -1,8 +1,4 @@
-#include "Arduino.h"
 #include "Telas.h"
-#include "codigoTelas.h"
-#include <LiquidCrystal_I2C.h>
-#include <Rele.h>
 
 LiquidCrystal_I2C display(ENDERECO_DISPLAY, COLUNAS_DISPLAY, LINHAS_DISPLAY);
 

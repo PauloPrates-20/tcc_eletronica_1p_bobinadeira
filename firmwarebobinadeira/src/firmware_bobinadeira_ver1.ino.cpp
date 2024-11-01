@@ -2,35 +2,15 @@
 #include <Keypad.h>
 #include <Rele.h>
 #include <Telas.h>
+#include <MotorDC.h>
+#include <MotorPasso.h>
 
 // Definições de hardware
-// Motor DC
-#define PIN_MOTOR_DC 6
-
-// Encoder
-#define PIN_CLK 18
-
-// Motor de passo
-#define PWM_PASSO 5      // Pino PWM do motor de passo
-#define DIRECAO_PASSO 4  // Pino de direção do motor de passo
-#define ENABLE 2         // Pino enable do motor de passo
-
-// Definição dos sentidos do motor
-#define FRENTE false
-#define TRAS true
-
-// Fins de curso
-#define PORTA 12     // Pino do sensor de porta
-#define INICIO 13  // Pino do fim de curso 2
-
 // Keypad
 #define LINHAS_TECLADO 4
 #define COLUNAS_TECLADO 4
 
-/* Variáveis */
-int telaAtual = 1;
-char quadrado = 255;
-
+// Variáveis
 // Keypad
 byte pinLinhasTeclado[LINHAS_TECLADO] = { 52, 50, 48, 46 };
 byte pinColunasTeclado[COLUNAS_TECLADO] = { 44, 42, 40, 38 };
@@ -45,35 +25,8 @@ char teclas[LINHAS_TECLADO][COLUNAS_TECLADO] = {
 // Instanciamento do keypad
 Keypad teclado = Keypad(makeKeymap(teclas), pinLinhasTeclado, pinColunasTeclado, LINHAS_TECLADO, COLUNAS_TECLADO);
 
-// Motor DC
-// RPM inicial do motor DC
-int rpm = 350;
-
-// Encoder
-// Contagem de pulsos
-volatile int pulsosEncoder = 0;
-
-// Último estado do encoder
-volatile bool ultimoEstadoClk = LOW;
-
-// Temporizador de debounce (para evitar ruídos na leitura) (em milissegundos)
-unsigned long ultimoDebounce = 0;
-const unsigned long DEBOUNCE = 0;
-
-// Motor de passo
-// Parâmetros de movimento linear
-const int PASSOS_REVOLUCAO = 200;                              // Quantidade de passos por volta do motor de passo
-const int PULSOS_REVOLUCAO = 1600;                             // Quantidade de pulsos por volta do motor de passo
-const int PULSOS_PASSO = PULSOS_REVOLUCAO / PASSOS_REVOLUCAO;  // Quantidade de pulsos por passo do motor de passo
-const int PASSO_FUSO = 8;                                      // Passo do fuso por volta em mm
-
-// Variáveis de controle do motor de passo
-int rpmPasso;           // RPM inicial do motor de passo
-bool direcao = FRENTE;  // Direção inicial do motor de passo
-
 // Estado da calibragem
 bool calibrado = false;
-bool salvo = false;  // Estado do indutor
 
 void setup() {
   // Serial

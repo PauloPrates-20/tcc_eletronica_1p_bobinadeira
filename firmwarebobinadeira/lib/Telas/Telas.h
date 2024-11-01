@@ -12,6 +12,9 @@
 // Instância do display
 extern LiquidCrystal_I2C display;
 
+// Controle de tela
+extern int telaAtual = 1;
+
 // Caractere quadrado
 const char QUADRADO = 255;
 

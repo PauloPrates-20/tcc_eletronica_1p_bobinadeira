@@ -1,3 +1,7 @@
+#include "MotorPasso.h"
+#include <Telas.h>
+#include <MotorDC.h>
+
 // Função de offset do motor;
 void offset() {
   const unsigned long DURACAO_PULSOS = (1.0 / ((240 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
@@ -34,7 +38,7 @@ void zerarMotorPasso() {
   digitalWrite(DIRECAO_PASSO, TRAS); // Define o sentido em direção ao zero
   digitalWrite(ENABLE, LOW); // Habilita o motor de passo
 
-  telaAtual = calibrarPasso();
+  telaAtual = telaCalibrarPasso();
   // Atua o motor de passo até o fim de curso
   while (digitalRead(INICIO)) {
     digitalWrite(PWM_PASSO, HIGH);
@@ -44,7 +48,7 @@ void zerarMotorPasso() {
   }
 
   digitalWrite(ENABLE, HIGH); // Desabilita o motor de passo
-  telaAtual = concluirCalibragem();
+  telaAtual = telaConcluirCalibragem();
   delay(2000);
 }
 
