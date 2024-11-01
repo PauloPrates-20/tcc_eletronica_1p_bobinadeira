@@ -1,6 +1,7 @@
 // Bibliotecas
-#include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
+#include <Rele.h>
+#include <Telas.h>
 
 // Definições de hardware
 // Motor DC
@@ -22,51 +23,13 @@
 #define PORTA 12     // Pino do sensor de porta
 #define INICIO 13  // Pino do fim de curso 2
 
-// Display
-#define ENDERECO_DISPLAY 0x38
-#define COLUNAS_DISPLAY 20
-#define LINHAS_DISPLAY 4
-
 // Keypad
 #define LINHAS_TECLADO 4
 #define COLUNAS_TECLADO 4
 
-// Módulo relé
-#define VERDE A0
-#define AMARELO A1
-#define VERMELHO A2
-
 /* Variáveis */
-
-// Display
-// Controle de telas
-enum telas {
-  ERRO_PORTA = -2,
-  ERRO_CALIBRAGEM,
-  INICIAL = 1,
-  BOBINAR = 20,
-  INDUTOR,
-  PARAMETROS,
-  CONFIRMAR_PARAMETROS,
-  PROGRESSO,
-  OFFSET,
-  AVISO_CALIBRAGEM = 30,
-  CALIBRAGEM_RPM,
-  CONFIRMAR_RPM,
-  CALIBRAGEM_PASSO,
-  CONCLUIR_CALIBRAGEM
-};
-
 int telaAtual = 1;
 char quadrado = 255;
-
-/* 
-  | Instanciamento do display
-  | -------------------------------------
-  | endereço 0x27 no modelo físico
-  | endereço 0x38 para teste no proteus
-*/
-LiquidCrystal_I2C display(0x27, COLUNAS_DISPLAY, LINHAS_DISPLAY);
 
 // Keypad
 byte pinLinhasTeclado[LINHAS_TECLADO] = { 52, 50, 48, 46 };
@@ -110,34 +73,21 @@ bool direcao = FRENTE;  // Direção inicial do motor de passo
 
 // Estado da calibragem
 bool calibrado = false;
-
-// Parâmetros do indutor
-String refEspiras = "";      // Espiras do indutor na IHM
-String refComprimento = "";  // Comprimento do indutor na IHM
-String refDiametro = "";     // Diametro do filamento na IHM
-String refOffset = "";       // Offset do motor de passo na IHM
-String parametro;            // Parametro a exibir no display
-String valorFormatado;       // Valor do parametro formatado para exibição
-
-int espiras;         // Quantidade de espiras do indutor
-int comprimento;     // Comprimento interno do indutor em mm
-float diametro;      // Bitola do fio em mm
-int offsetPasso = 20;     // Offset do motor de passo em mm
 bool salvo = false;  // Estado do indutor
 
 void setup() {
-  /* Serial */
+  // Serial
   // Inicialização da comunicação Serial
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
-  /* Motor DC */
+  // Motor DC
   // Inicialização do motor DC
   pinMode(PIN_MOTOR_DC, OUTPUT);
   digitalWrite(PIN_MOTOR_DC, LOW);
 
   pinMode(PIN_CLK, INPUT_PULLUP);
 
-  /* Fins de curso */
+  // Fins de curso
   // Definição dos pinos dos fins de curso como entrada
   pinMode(PORTA, INPUT_PULLUP);
   pinMode(INICIO, INPUT_PULLUP);
@@ -146,7 +96,7 @@ void setup() {
   digitalWrite(PORTA, HIGH);
   digitalWrite(INICIO, HIGH);
 
-  /* Motor de Passo */
+  // Motor de passo
   // Definição dos pinos do motor de passo como saída
   pinMode(ENABLE, OUTPUT);
   pinMode(DIRECAO_PASSO, OUTPUT);
@@ -156,7 +106,7 @@ void setup() {
   digitalWrite(ENABLE, HIGH);            // Desabilita o motor
   digitalWrite(DIRECAO_PASSO, direcao);  // Define a direção inicial do motor
 
-  /* Módulo Relé */
+  // Módulo Relé
   // Configuração inicial
   pinMode(VERDE, OUTPUT);
   pinMode(AMARELO, OUTPUT);
@@ -165,7 +115,7 @@ void setup() {
   digitalWrite(AMARELO, HIGH);
   digitalWrite(VERMELHO, HIGH);
 
-  /* Interface */
+  // Interface
   // Inicialização da interface
   display.begin();
   display.backlight();
@@ -174,7 +124,7 @@ void setup() {
 }
 
 void loop() {
-  /* Teste dos fins de curso */
+  // Teste fim de curso
   // if (!digitalRead(PORTA) || !digitalRead(INICIO)) {
   //   Serial.print("PORTA: ");
   //   Serial.println(digitalRead(PORTA));
@@ -198,7 +148,7 @@ void loop() {
     }
   }
 
-  /* Controle IHM */
+  // Controle IHM
   char tecla = teclado.getKey();
   // if (tecla) {
   //   Serial.println(tecla);
@@ -367,45 +317,6 @@ void loop() {
       }
       break;
   }
-
-  /* Controle Serial */
-  // Leitura do comando inicial
-  // if (Serial.available() > 0) { // Verifica se existem dados para leitura na Serial
-  //   String comando = Serial.readStringUntil('\n'); // Lê o comando
-
-  //   // Rotina de controle do motor de passo
-  //   if (comando == "r") {
-  //     salvo = false;
-  //     // Lê a quantidade de espiras do indutor
-  //     Serial.print("Espiras: ");
-  //     esperarInput();
-  //     espiras = Serial.readStringUntil('\n').toInt();
-  //     Serial.println(espiras);
-
-  //     // Lê o comprimento do indutor
-  //     Serial.print("Comprimento (mm): ");
-  //     esperarInput();
-  //     comprimento = Serial.readStringUntil('\n').toFloat();
-  //     Serial.println(comprimento);
-
-  //     // Lê o diâmetro do fio
-  //     Serial.print("Bitola (mm): ");
-  //     esperarInput();
-  //     diametro = Serial.readStringUntil('\n').toFloat();
-  //     Serial.println(diametro);
-
-  //     Serial.println(""); // Quebra de linha
-
-  //     // Inicia a rotina do motor
-  //     bobinar();
-  //   } else if (comando == "u" && salvo) {
-  //     bobinar();
-  //   } else if (comando == "c") {
-  //     Serial.println("Calibrando...");
-  //     calibrar();
-  //     Serial.println("Motores calibrados.");
-  //   }
-  // }
 }
 
 // Função para calibrar os motores

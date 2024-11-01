@@ -1,3 +1,6 @@
+#include "arduino.h"
+#include "Rele.h"
+
 void seguro() {
   digitalWrite(VERDE, LOW);
   digitalWrite(AMARELO, HIGH);

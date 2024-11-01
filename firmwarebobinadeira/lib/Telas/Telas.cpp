@@ -1,5 +1,11 @@
-/* Funções auxiliares */
-// Função para centralizar o texto
+#include "Arduino.h"
+#include "Telas.h"
+#include "codigoTelas.h"
+#include <LiquidCrystal_I2C.h>
+#include <Rele.h>
+
+LiquidCrystal_I2C display(ENDERECO_DISPLAY, COLUNAS_DISPLAY, LINHAS_DISPLAY);
+
 int centralizarDisplay(String texto) {
   int posicao = (COLUNAS_DISPLAY - texto.length()) / 2;
 
@@ -116,7 +122,7 @@ int telaParametro(String parametro, String valor) {
   formatarValor(parametro, valor);
 
   String titulo = "Definir " + parametro;
-  String linha1 = parametro + ": " + String(valorFormatado) + quadrado + espacador;
+  String linha1 = parametro + ": " + String(valorFormatado) + QUADRADO + espacador;
   String linha2 = "*)Aceitar #)Apagar";
 
 
@@ -188,7 +194,7 @@ int telaOffset(String parametro, String valor) {
   formatarValor(parametro, valor);
 
   String titulo = "Definir " + parametro;
-  String linha1 = parametro + ": " + String(valorFormatado) + quadrado + espacador;
+  String linha1 = parametro + ": " + String(valorFormatado) + QUADRADO + espacador;
   String linha2 = "*)Aceitar #)Apagar";
 
 
@@ -226,7 +232,7 @@ int telaAvisoCalibragem() {
 }
 
 // Tela de calibragem do RPM
-int calibrarRPM(int tempo) {
+int telaCalibrarRPM(int tempo) {
   display.clear();
 
   String linha1 = "Calibrando RPM";
@@ -243,7 +249,7 @@ int calibrarRPM(int tempo) {
 }
 
 // Tela de exibição do RPM
-int confirmarRPM(int rpm) {
+int telaConfirmarRPM(int rpm) {
   display.clear();
 
   String linha1 = "RPM Medido:";
@@ -258,7 +264,7 @@ int confirmarRPM(int rpm) {
 }
 
 // Tela de calibragem do motor de passo
-int calibrarPasso() {
+int telaCalibrarPasso() {
   display.clear();
 
   String linha1 = "Alinhando eixo";
@@ -275,7 +281,7 @@ int calibrarPasso() {
 }
 
 // Tela de conclusão da calibragem
-int concluirCalibragem() {
+int telaConcluirCalibragem() {
   display.clear();
 
   String linha1 = "Eixo alinhado";
