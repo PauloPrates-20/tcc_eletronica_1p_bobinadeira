@@ -2,6 +2,9 @@
 #include <Telas.h>
 #include <MotorDC.h>
 
+bool direcao = FRENTE; // Direção inicial do motor de passo
+bool salvo = false; // Estado de configuração do indutor
+
 // Função de offset do motor;
 void offset() {
   const unsigned long DURACAO_PULSOS = (1.0 / ((240 / 60) * 1600) * 1000000) / 2; // Cálculo da duração dos pulsos
@@ -70,35 +73,13 @@ void bobinar() {
   int espirasTotais = 0;
   int camadaAtual = 1;
 
-  // Serial.println(espiras);
-  // Serial.println(comprimento);
-  // Serial.println(diametro);
-
   int espirasCamada = comprimento / diametro; // Calcula o número de espiras por camada
-  // Serial.print("Espiras por camada: ");
-  // Serial.println(espirasCamada);
   
-  int camadas = ceil(espiras / espirasCamada) + 1;
-  // Serial.print("Camadas: ");
-  // Serial.println(camadas);
-
   // Calcula a quantidade de passos para cada espira do indutor
   const int PASSOS_ESPIRA = 1.0 * diametro / ((1.0 * PASSO_FUSO) / (1.0 * PASSOS_REVOLUCAO)); 
-  // Serial.print("Passos por espira: ");
-  // Serial.println(PASSOS_ESPIRA);
 
   // Calcula a duração dos pulsos com base no rpm
   const unsigned long DURACAO_PULSOS = (1.0 / ((1.0 * rpm / 60.0) * (1.0 * PASSOS_ESPIRA * PULSOS_PASSO))) * 1000000; // Duração dos pulsos em micro segundos
-  // Serial.print("Duração dos pulsos: ");
-  // Serial.println(DURACAO_PULSOS);
-
-  // Calcula o tempo estimado do processo
-  float tempoEstimado = espiras * 1.0 / (rpm / 60.0);
-
-  // Exibe os parâmetros configurados e os parâmetros estimados (deslocamento e tempo)
-  Serial.print("Tempo estimado: ");
-  Serial.print(tempoEstimado);
-  Serial.println(" segundos");
 
   digitalWrite(ENABLE, LOW); // Habilita o motor
   direcao = FRENTE;
@@ -107,7 +88,6 @@ void bobinar() {
   telaAtual = telaProgresso(espirasTotais, camadaAtual);
 
   // Inicia o temporizador
-  unsigned long tempoAtual = micros();
   unsigned long ultimoPulso = 0;
   unsigned long ultimaAtualizacao = 0;
 
@@ -136,15 +116,6 @@ void bobinar() {
         espiraAtual++; // Incrementação de espiras da camada
         espirasTotais++; // Incrementação do total de espiras
 
-        // Exibição das voltas
-        // Serial.print(espirasTotais);
-        // Serial.print(" ");
-
-        // Quebra a linha a cada 30 espiras
-        // if (espiraAtual % 30 == 0) {
-        //   Serial.print("\n");
-        // }
-
         // Atualiza o progresso
         if (millis() - ultimaAtualizacao >= 1000) {
           atualizarEspira(espirasTotais);
@@ -160,9 +131,6 @@ void bobinar() {
 
           digitalWrite(DIRECAO_PASSO, direcao);
           atualizarCamada(camadaAtual);
-
-          // Serial.print("\nCamada: ");
-          // Serial.println(camadaAtual);
         }
 
         // Interrompe o processo ao bater no fim de curso
@@ -172,23 +140,18 @@ void bobinar() {
         }
 
         // Interrompe o processo caso a porta seja aberta
-        if (digitalRead(PORTA))
+        if (digitalRead(PIN_PORTA))
         {
           break;
         }
       }
     }
   }
-  float tempoTotal = (micros() - tempoAtual) / 1000000.0;
-
+  
   desligarMotorDc();
   digitalWrite(ENABLE, HIGH); // Desablita o motor de passo ao término da rotina
 
   // Feedback para o usuário
-  Serial.println("Pronto!");
-  Serial.print("Tempo total: ");
-  Serial.print(tempoTotal); // Calcula e exibe o tempo real de execução da rotina
-  Serial.println(" segundos\n");
   atualizarEspira(espirasTotais);
   atualizarCamada(camadaAtual);
   delay(2000);

@@ -28,6 +28,9 @@ Keypad teclado = Keypad(makeKeymap(teclas), pinLinhasTeclado, pinColunasTeclado,
 // Estado da calibragem
 bool calibrado = false;
 
+// Protótipos de funções
+void calibrar();
+
 void setup() {
   // Serial
   // Inicialização da comunicação Serial
@@ -42,11 +45,11 @@ void setup() {
 
   // Fins de curso
   // Definição dos pinos dos fins de curso como entrada
-  pinMode(PORTA, INPUT_PULLUP);
+  pinMode(PIN_PORTA, INPUT_PULLUP);
   pinMode(INICIO, INPUT_PULLUP);
 
   // Acionamento do pull-up interno para os fins de curso
-  digitalWrite(PORTA, HIGH);
+  digitalWrite(PIN_PORTA, HIGH);
   digitalWrite(INICIO, HIGH);
 
   // Motor de passo
@@ -87,7 +90,7 @@ void loop() {
   // }
 
   // Interrupção de porta aberta
-  while (digitalRead(PORTA)) {
+  while (digitalRead(PIN_PORTA)) {
     if (telaAtual != ERRO_PORTA) {
       telaAtual = telaErroPorta();
     }
@@ -287,10 +290,4 @@ void calibrar() {
   Serial.println("Calibrado");
   telaAtual = telaInicial();
   calibrado = true;
-}
-
-// Função para esperar entrada do usuário
-void esperarInput() {
-  while (Serial.available() == 0) {
-  }
 }

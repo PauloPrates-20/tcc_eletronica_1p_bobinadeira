@@ -1,4 +1,9 @@
-#include <MotorDC.h>
+#include "MotorDC.h"
+
+int rpm = 350;
+volatile int pulsosEncoder = 0;
+volatile bool ultimoEstadoClk = false;
+unsigned long ultimoDebounce = 0;
 
 // Função para ler os pulsos do encoder
 void lerEncoder() {

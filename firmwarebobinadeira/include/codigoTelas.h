@@ -1,5 +1,5 @@
-#ifndef codigoTelas.h
-#define codigoTelas.h
+#ifndef codigoTelas_h
+#define codigoTelas_h
 
 // Controle de telas do display
 enum Codigos {

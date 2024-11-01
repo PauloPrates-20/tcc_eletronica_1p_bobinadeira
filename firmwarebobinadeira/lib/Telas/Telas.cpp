@@ -1,5 +1,18 @@
 #include "Telas.h"
 
+int telaAtual = 1;
+String refEspiras = "";      
+String refComprimento = "";  
+String refDiametro = "";     
+String refOffset = "";       
+String parametro = "";        
+String valorFormatado = "";
+
+int espiras;         // Quantidade de espiras do indutor
+int comprimento;     // Comprimento interno do indutor em mm
+float diametro;      // Bitola do fio em mm
+int offsetPasso = 20;
+
 LiquidCrystal_I2C display(ENDERECO_DISPLAY, COLUNAS_DISPLAY, LINHAS_DISPLAY);
 
 int centralizarDisplay(String texto) {
